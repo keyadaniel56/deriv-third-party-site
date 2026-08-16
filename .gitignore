@@ -6,3 +6,8 @@ node_modules/
 
 # Build source archive (too large for git)
 bot-app.zip
+bot-app (1).zip
+bot-app/dist/
+bot-app/out/
+bot-app/node_modules/
+bot-app/package-lock.json

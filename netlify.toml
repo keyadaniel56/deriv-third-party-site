@@ -7,6 +7,12 @@
 [build.environment]
   NODE_VERSION = "20"
 
+# Bot-app SPA rewrite: serve bot-builder/index.html for all /bot-builder/* routes
+[[redirects]]
+  from = "/bot-builder/*"
+  to = "/bot-builder/index.html"
+  status = 200
+
 # Basic security headers for the whole site
 [[headers]]
   for = "/*"
