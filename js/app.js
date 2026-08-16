@@ -747,7 +747,7 @@
     async function handleOAuthCallback() {
         const params = new URLSearchParams(window.location.search);
         const code = params.get('code');
-        const state = params.get('state');
+        const stateParam = params.get('state');
         const err = params.get('error');
         const cleanUrl = () => {
             window.history.replaceState({}, document.title, window.location.origin + window.location.pathname);
@@ -771,7 +771,7 @@
             sessionStorage.removeItem('oauth_state');
         } catch (e) { /* noop */ }
 
-        if (!verifier || !storedState || storedState !== state) {
+        if (!verifier || !storedState || storedState !== stateParam) {
             toast('OAuth state mismatch — sign-in aborted.', 'error');
             return true;
         }
