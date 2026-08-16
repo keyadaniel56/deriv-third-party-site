@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="en" dir="auto">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <meta name="robots" content="index, follow, max-image-preview:large" />
+        <meta name="theme-color" content="#062E78" />
+        <meta
+            name="description"
+            content="TradersUnit is a trusted, premium third-party Deriv trading workspace offering free bots, an AI market scanner, automated and manual trading tools, and in-depth analysis — built to help beginners and pros trade smarter and grow their profits."
+        />
+        <meta property="og:title" content="TradersUnit Trading Workspace" />
+        <meta
+            property="og:description"
+            content="Free bots, Deriv automation, charts, manual trading, and analysis tools from TradersUnit. Deriv trading workspace for disciplined execution."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="TradersUnit" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <title>TradersUnit - Free Deriv Bots, Smart Trading Tools and Automation</title>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="/css/style.css" />
+    </head>
+
+    <body class="theme--dark">
+        <!-- ============ Futuristic loader ============ -->
+        <div id="app-loader" class="futuristic-loader" aria-hidden="false">
+            <div class="futuristic-loader__ambient"></div>
+            <div class="futuristic-loader__panel">
+                <div class="futuristic-loader__halo"></div>
+                <div class="futuristic-loader__logo">
+                    <div class="brand-mark" aria-hidden="true">
+                        <svg width="44" height="44" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="64" height="64" rx="14" fill="#020B24" />
+                            <path d="M12 42L24 22l8 13 7-10 13 17H12z" fill="#3D7BFF" />
+                            <text x="32" y="40" text-anchor="middle" font-family="IBM Plex Sans, Arial" font-size="18" font-weight="700" fill="#fff">TU</text>
+                        </svg>
+                    </div>
+                    <div class="futuristic-loader__brand">TradersUnit</div>
+                    <div class="futuristic-loader__tagline">Deriv trading workspace for disciplined execution</div>
+                </div>
+                <div class="futuristic-loader__orbiter">
+                    <span></span><span></span><span></span>
+                </div>
+                <div id="loader-comment" class="futuristic-loader__comment">Connecting to Deriv API…</div>
+                <div class="futuristic-loader__progress-track">
+                    <div id="loader-progress" class="futuristic-loader__progress-fill" style="width: 0%"></div>
+                </div>
+                <div class="futuristic-loader__hint">Third-party Deriv trading platform built on the Deriv API</div>
+            </div>
+        </div>
+
+        <!-- ============ Header ============ -->
+        <header class="site-header">
+            <nav class="nav">
+                <a href="#top" class="brand">
+                    <span class="brand-mark brand-mark--sm" aria-hidden="true">
+                        <svg width="28" height="28" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="64" height="64" rx="14" fill="#020B24" />
+                            <path d="M12 42L24 22l8 13 7-10 13 17H12z" fill="#3D7BFF" />
+                            <text x="32" y="40" text-anchor="middle" font-family="IBM Plex Sans, Arial" font-size="18" font-weight="700" fill="#fff">TU</text>
+                        </svg>
+                    </span>
+                    <span class="brand__name">TradersUnit</span>
+                </a>
+                <ul class="nav__links">
+                    <li><a href="#markets">Markets</a></li>
+                    <li><a href="#scanner">AI Scanner</a></li>
+                    <li><a href="#trade">Trade</a></li>
+                    <li><a href="#bots">Bots</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                </ul>
+                <div class="nav__actions">
+                    <button id="account-chip" class="account-chip" type="button" hidden>
+                        <span class="account-chip__dot"></span>
+                        <span id="account-chip-text">Connect</span>
+                    </button>
+                    <button id="nav-connect" class="btn btn--primary" type="button">Connect with Deriv</button>
+                    <button id="nav-menu" class="nav-burger" type="button" aria-label="Menu" aria-expanded="false">
+                        <span></span><span></span><span></span>
+                    </button>
+                </div>
+            </nav>
+        </header>
+
+        <main id="top">
+            <!-- ============ Hero ============ -->
+            <section class="hero">
+                <div class="hero__ambient"></div>
+                <div class="hero__inner">
+                    <div id="hero-status" class="hero__status">
+                        <span class="status-dot"></span>
+                        <span id="hero-status-text">Connecting to Deriv API…</span>
+                    </div>
+                    <h1 class="hero__title">
+                        Deriv trading workspace for <span class="grad-text">disciplined execution</span>
+                    </h1>
+                    <p class="hero__subtitle">
+                        Free Deriv bots, a live AI market scanner, charting, manual trading tools and analysis —
+                        all in one trusted third-party Deriv workspace built on the official Deriv API.
+                    </p>
+                    <div class="hero__cta">
+                        <a href="#markets" class="btn btn--primary btn--lg">Start Trading</a>
+                        <a href="#bots" class="btn btn--ghost btn--lg">Explore Free Bots</a>
+                    </div>
+                    <div class="hero__live">
+                        <div class="hero__live-label">Live market feed</div>
+                        <div class="hero__live-price">
+                            <span id="hero-symbol">R_100</span>
+                            <strong id="hero-price">—</strong>
+                            <span id="hero-change" class="hero__change"></span>
+                            <span id="hero-countdown" class="hero__countdown"></span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============ Ticker strip ============ -->
+            <section class="ticker" aria-label="Live ticker">
+                <ul id="ticker-strip" class="ticker__strip"></ul>
+            </section>
+
+            <!-- ============ Markets / Chart ============ -->
+            <section id="markets" class="section">
+                <div class="section__head">
+                    <div>
+                        <span class="section__eyebrow">Live Markets</span>
+                        <h2 class="section__title">Real-time Deriv market data</h2>
+                        <p class="section__muted">
+                            Live prices streamed over the Deriv WebSocket API. Markets update every tick.
+                        </p>
+                    </div>
+                    <div class="select-wrap">
+                        <label class="sr-only" for="symbol-select">Select market</label>
+                        <select id="symbol-select" class="select"></select>
+                    </div>
+                </div>
+                <div class="markets-grid">
+                    <div class="chart-card glass">
+                        <div class="chart-card__head">
+                            <div>
+                                <div id="chart-symbol" class="chart-card__symbol">R_100</div>
+                                <div id="chart-symbol-name" class="chart-card__name">Volatility 100 Index</div>
+                            </div>
+                            <div class="chart-card__stat">
+                                <span class="chart-card__stat-label">Spot price</span>
+                                <span id="spot-price" class="chart-card__stat-value">—</span>
+                            </div>
+                            <div class="chart-card__stat">
+                                <span class="chart-card__stat-label">Change</span>
+                                <span id="spot-change" class="chart-card__stat-value"></span>
+                            </div>
+                            <div class="chart-card__stat">
+                                <span class="chart-card__stat-label">Ticks</span>
+                                <span id="spot-countdown" class="chart-card__stat-value">—</span>
+                            </div>
+                            <button id="open-trade-btn" class="btn btn--primary" type="button">Trade this market</button>
+                        </div>
+                        <div class="chart-wrap">
+                            <canvas id="chart-canvas"></canvas>
+                            <div id="chart-empty" class="chart-empty">Waiting for market data…</div>
+                        </div>
+                    </div>
+                    <aside class="markets-side">
+                        <div class="markets-side__card glass">
+                            <h3>Deriv synthetic indices</h3>
+                            <p class="section__muted">
+                                Trade synthetic indices that simulate real-world markets — available 24/7,
+                                including weekends and holidays.
+                            </p>
+                            <ul class="market-list">
+                                <li><span class="market-list__name">Volatility 100</span><span class="market-list__tag">R_100</span></li>
+                                <li><span class="market-list__name">Volatility 75</span><span class="market-list__tag">R_75</span></li>
+                                <li><span class="market-list__name">Volatility 50</span><span class="market-list__tag">R_50</span></li>
+                                <li><span class="market-list__name">Volatility 25</span><span class="market-list__tag">R_25</span></li>
+                                <li><span class="market-list__name">Volatility 10</span><span class="market-list__tag">R_10</span></li>
+                                <li><span class="market-list__name">Boom 500</span><span class="market-list__tag">BOOM500</span></li>
+                                <li><span class="market-list__name">Crash 500</span><span class="market-list__tag">CRASH500</span></li>
+                                <li><span class="market-list__name">Step Index</span><span class="market-list__tag">1HZ100V</span></li>
+                            </ul>
+                            <a class="btn btn--ghost btn--block" href="#scanner">Open AI scanner</a>
+                        </div>
+                    </aside>
+                </div>
+            </section>
+
+            <!-- ============ Scanner ============ -->
+            <section id="scanner" class="section section--alt">
+                <div class="section__head">
+                    <div>
+                        <span class="section__eyebrow">AI Market Scanner</span>
+                        <h2 class="section__title">Every market, every tick, at a glance</h2>
+                        <p class="section__muted">
+                            The scanner continuously analyses live Deriv tick streams, tracking price action and
+                            volatility across synthetic indices in real time.
+                        </p>
+                    </div>
+                    <div id="scanner-status" class="badge badge--success"><span class="status-dot"></span> Live</div>
+                </div>
+                <div id="scanner-grid" class="scanner-grid"></div>
+            </section>
+
+            <!-- ============ Trade ============ -->
+            <section id="trade" class="section">
+                <div class="section__head">
+                    <div>
+                        <span class="section__eyebrow">Manual Trader</span>
+                        <h2 class="section__title">Trade manually with discipline</h2>
+                        <p class="section__muted">
+                            Configure a contract, get a live Deriv proposal price and buy in seconds. Connect your
+                            Deriv account first to unlock trading.
+                        </p>
+                    </div>
+                    <div class="select-wrap">
+                        <label class="sr-only" for="trade-symbol-select">Trade symbol</label>
+                        <select id="trade-symbol-select" class="select"></select>
+                    </div>
+                </div>
+                <div class="trade-grid">
+                    <div class="trade-builder glass">
+                        <div class="trade-builder__row">
+                            <span class="trade-builder__label">Contract type</span>
+                            <div class="contract-group" role="radiogroup" aria-label="Contract type">
+                                <button class="contract-btn is-active" data-contract="CALL" type="button">Rise</button>
+                                <button class="contract-btn" data-contract="PUT" type="button">Fall</button>
+                            </div>
+                        </div>
+                        <div class="trade-builder__row">
+                            <span class="trade-builder__label">Duration</span>
+                            <div class="field-row">
+                                <input id="duration-input" class="input" type="number" min="1" max="60" value="1" />
+                                <select id="duration-unit" class="select">
+                                    <option value="m">Minutes</option>
+                                    <option value="t">Ticks</option>
+                                    <option value="s">Seconds</option>
+                                    <option value="h">Hours</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="trade-builder__row">
+                            <span class="trade-builder__label">Basis</span>
+                            <div class="field-row">
+                                <select id="basis-select" class="select">
+                                    <option value="payout">Payout</option>
+                                    <option value="stake">Stake</option>
+                                </select>
+                                <select id="currency-select" class="select">
+                                    <option value="USD">USD</option>
+                                    <option value="EUR">EUR</option>
+                                    <option value="GBP">GBP</option>
+                                    <option value="AUD">AUD</option>
+                                    <option value="BTC">BTC</option>
+                                    <option value="ETH">ETH</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="trade-builder__row">
+                            <span class="trade-builder__label">Amount</span>
+                            <input id="stake-input" class="input" type="number" min="0.35" step="0.01" value="10" />
+                        </div>
+
+                        <div id="trade-auth-required" class="trade-auth">
+                            <p>
+                                Trading requires a connected Deriv account. Paste a Deriv API token (scopes:
+                                <code>read</code>, <code>trade</code>) to connect.
+                            </p>
+                            <div class="trade-auth__actions">
+                                <button id="trade-connect-btn" class="btn btn--primary" type="button">Connect with Deriv</button>
+                            </div>
+                        </div>
+                        <div id="trade-account-info" class="trade-account" hidden>
+                            <div class="trade-account__row">
+                                <span class="trade-account__label">Connected account</span>
+                                <span id="trade-account-id" class="trade-account__value">—</span>
+                            </div>
+                            <div class="trade-account__row">
+                                <span class="trade-account__label">Balance</span>
+                                <span id="trade-account-balance" class="trade-account__value">—</span>
+                            </div>
+                        </div>
+
+                        <div class="trade-result">
+                            <div class="trade-result__meta">
+                                <span id="proposal-status" class="trade-result__status">Waiting for market…</span>
+                                <span id="proposal-price" class="trade-result__price">—</span>
+                            </div>
+                            <button id="buy-btn" class="btn btn--primary btn--lg btn--block" type="button" disabled>
+                                Buy contract
+                            </button>
+                            <p id="buy-status" class="trade-result__hint"></p>
+                        </div>
+                    </div>
+                    <aside class="trade-aside">
+                        <div class="trade-aside__card glass">
+                            <h3>Trade responsibly</h3>
+                            <p class="section__muted">
+                                Trading carries risk. Never trade more than you can afford to lose, set clear limits
+                                and review your strategies regularly. Automated and manual trading on Deriv both carry
+                                the same market risks.
+                            </p>
+                            <ul class="check-list">
+                                <li>Start with a Deriv demo account</li>
+                                <li>Set a stake you are comfortable losing</li>
+                                <li>Use the AI scanner to spot opportunities</li>
+                                <li>Keep a trading journal</li>
+                            </ul>
+                        </div>
+                        <div class="trade-aside__card glass">
+                            <h3>How proposals work</h3>
+                            <p class="section__muted">
+                                The price you see is a live Deriv proposal — the amount you must pay for the selected
+                                payout. Prices update every tick until you buy.
+                            </p>
+                        </div>
+                    </aside>
+                </div>
+            </section>
+
+            <!-- ============ Bots ============ -->
+            <section id="bots" class="section section--alt">
+                <div class="section__head">
+                    <div>
+                        <span class="section__eyebrow">Free Deriv Bots</span>
+                        <h2 class="section__title">Ready-to-run bot strategies</h2>
+                        <p class="section__muted">
+                            Strategy templates you can import into Deriv Bot (DBot) to automate your trading and remove
+                            emotion from the equation.
+                        </p>
+                    </div>
+                </div>
+                <div class="bots-grid">
+                    <article class="bot-card glass">
+                        <div class="bot-card__icon bot-card__icon--blue">V</div>
+                        <h3>Volatility 75 Power</h3>
+                        <p>
+                            A trend-following strategy built for the Volatility 75 Index using Rise/Fall contracts
+                            with adjustable risk.
+                        </p>
+                        <ul class="check-list">
+                            <li>R_75 · Rise/Fall</li>
+                            <li>Configurable stake &amp; max trades</li>
+                            <li>Stop-loss + daily profit target</li>
+                        </ul>
+                        <button class="btn btn--ghost btn--block" type="button" data-bot="vol75">View strategy</button>
+                    </article>
+                    <article class="bot-card glass">
+                        <div class="bot-card__icon bot-card__icon--green">B</div>
+                        <h3>Boom &amp; Crash Breakout</h3>
+                        <p>
+                            A breakout strategy for Boom and Crash indices, placing Over/Under trades on strong price
+                            moves after consolidation.
+                        </p>
+                        <ul class="check-list">
+                            <li>BOOM500 / CRASH500 · Over/Under</li>
+                            <li>Consolidation detection</li>
+                            <li>Trailing stop settings</li>
+                        </ul>
+                        <button class="btn btn--ghost btn--block" type="button" data-bot="boom">View strategy</button>
+                    </article>
+                    <article class="bot-card glass">
+                        <div class="bot-card__icon bot-card__icon--gold">D</div>
+                        <h3>Digit Even/Odd</h3>
+                        <p>
+                            A digit strategy trading the last digit of the tick — Even/Odd and Matches/Differs with
+                            fixed-tick durations.
+                        </p>
+                        <ul class="check-list">
+                            <li>Volatility indices · Digit</li>
+                            <li>Last-digit predictor</li>
+                            <li>1-tick &amp; multi-tick modes</li>
+                        </ul>
+                        <button class="btn btn--ghost btn--block" type="button" data-bot="digit">View strategy</button>
+                    </article>
+                    <article class="bot-card glass">
+                        <div class="bot-card__icon bot-card__icon--violet">R</div>
+                        <h3>Rise/Fall Runner</h3>
+                        <p>
+                            A simple, repeatable Rise/Fall strategy for the Step Index and low-volatility markets,
+                            ideal for beginners learning automation.
+                        </p>
+                        <ul class="check-list">
+                            <li>1HZ100V · Rise/Fall</li>
+                            <li>Fixed interval trading</li>
+                            <li>Beginner-friendly defaults</li>
+                        </ul>
+                        <button class="btn btn--ghost btn--block" type="button" data-bot="runner">View strategy</button>
+                    </article>
+                </div>
+            </section>
+
+            <!-- ============ Analysis / Features ============ -->
+            <section id="analysis" class="section">
+                <div class="section__head">
+                    <div>
+                        <span class="section__eyebrow">Why TradersUnit</span>
+                        <h2 class="section__title">Built for focused execution</h2>
+                        <p class="section__muted">
+                            Everything you need to analyse, automate and execute — powered by the official Deriv API.
+                        </p>
+                    </div>
+                </div>
+                <div class="features-grid">
+                    <div class="feature glass">
+                        <div class="feature__icon">⚡</div>
+                        <h3>Live streaming data</h3>
+                        <p>Real-time ticks, candles and proposal prices streamed straight from the Deriv API.</p>
+                    </div>
+                    <div class="feature glass">
+                        <div class="feature__icon">📡</div>
+                        <h3>AI market scanner</h3>
+                        <p>Monitor every synthetic index at once and spot volatility and price action instantly.</p>
+                    </div>
+                    <div class="feature glass">
+                        <div class="feature__icon">🤖</div>
+                        <h3>Automation ready</h3>
+                        <p>Import free bot templates into Deriv Bot and run strategies while you sleep.</p>
+                    </div>
+                    <div class="feature glass">
+                        <div class="feature__icon">🛡️</div>
+                        <h3>Risk management</h3>
+                        <p>Built-in stop-loss, profit-target and stake discipline tools encourage responsible trading.</p>
+                    </div>
+                    <div class="feature glass">
+                        <div class="feature__icon">🌐</div>
+                        <h3>24/7 markets</h3>
+                        <p>Synthetic indices trade around the clock — including weekends and public holidays.</p>
+                    </div>
+                    <div class="feature glass">
+                        <div class="feature__icon">🔐</div>
+                        <h3>Secure sign-in</h3>
+                        <p>Connect with your Deriv account through standard OAuth 2.0 — your password never touches our site.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============ FAQ ============ -->
+            <section id="faq" class="section section--alt">
+                <div class="section__head">
+                    <div>
+                        <span class="section__eyebrow">FAQ</span>
+                        <h2 class="section__title">Frequently asked questions</h2>
+                    </div>
+                </div>
+                <div class="faq-list">
+                    <details class="faq-item glass">
+                        <summary>What is TradersUnit?</summary>
+                        <p>
+                            TradersUnit is a third-party Deriv trading workspace. We provide free Deriv bots, an AI
+                            market scanner, charting, manual trading tools and analysis — all built on the official
+                            Deriv API. Trading is executed through your Deriv account.
+                        </p>
+                    </details>
+                    <details class="faq-item glass">
+                        <summary>What is Deriv?</summary>
+                        <p>
+                            Deriv is a global online broker for trading forex, synthetic indices, stocks, commodities
+                            and cryptocurrencies. It is known for unique instruments such as Volatility Indices, Boom
+                            &amp; Crash and Step Index that are available to trade 24/7.
+                        </p>
+                    </details>
+                    <details class="faq-item glass">
+                        <summary>How do I connect my Deriv account?</summary>
+                        <p>
+                            Click “Connect with Deriv” and sign in with your Deriv credentials. You will be returned to
+                            this site with a short-lived access token. You can also paste a Deriv API token with
+                            <code>read</code> and <code>trade</code> scopes from the Deriv dashboard.
+                        </p>
+                    </details>
+                    <details class="faq-item glass">
+                        <summary>Are the bots free to use?</summary>
+                        <p>
+                            Yes. TradersUnit provides free Deriv bots and strategy templates for Volatility Indices,
+                            Boom &amp; Crash, Step Index, Rise/Fall, Even/Odd, Over/Under and more — with no hidden
+                            charges.
+                        </p>
+                    </details>
+                    <details class="faq-item glass">
+                        <summary>Is automated trading on Deriv risky?</summary>
+                        <p>
+                            Automated trading carries the same market risks as manual trading, and no bot can guarantee
+                            profits. Our risk-management settings and strategy templates help you trade more
+                            responsibly.
+                        </p>
+                    </details>
+                    <details class="faq-item glass">
+                        <summary>Is TradersUnit suitable for beginners?</summary>
+                        <p>
+                            Yes. TradersUnit is built for beginners and experienced traders alike, with guided
+                            workflows, ready-made bot templates, charting, manual trading tools and an AI scanner that
+                            simplify analysis and decision-making.
+                        </p>
+                    </details>
+                </div>
+            </section>
+        </main>
+
+        <!-- ============ Footer ============ -->
+        <footer class="site-footer">
+            <div class="site-footer__inner">
+                <div class="site-footer__brand">
+                    <div class="brand">
+                        <span class="brand-mark brand-mark--sm" aria-hidden="true">
+                            <svg width="24" height="24" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="64" height="64" rx="14" fill="#020B24" />
+                                <path d="M12 42L24 22l8 13 7-10 13 17H12z" fill="#3D7BFF" />
+                                <text x="32" y="40" text-anchor="middle" font-family="IBM Plex Sans, Arial" font-size="18" font-weight="700" fill="#fff">TU</text>
+                            </svg>
+                        </span>
+                        <span class="brand__name">TradersUnit</span>
+                    </div>
+                    <p class="section__muted">
+                        A third-party Deriv trading workspace. Live market data and trading powered by the Deriv API.
+                    </p>
+                </div>
+                <div class="site-footer__col">
+                    <h4>Platform</h4>
+                    <ul>
+                        <li><a href="#markets">Markets</a></li>
+                        <li><a href="#scanner">AI Scanner</a></li>
+                        <li><a href="#trade">Manual Trader</a></li>
+                        <li><a href="#bots">Bots</a></li>
+                    </ul>
+                </div>
+                <div class="site-footer__col">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="https://developers.deriv.com/" target="_blank" rel="noopener">Deriv API Docs</a></li>
+                        <li><a href="https://api.deriv.com/" target="_blank" rel="noopener">Deriv API Registration</a></li>
+                        <li><a href="https://deriv.com/" target="_blank" rel="noopener">Deriv</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="risk-disclaimer">
+                <p>
+                    <strong>Risk warning:</strong> Trading on financial markets carries substantial risk. The value of
+                    your investment may go down as well as up. TradersUnit is an independent third-party platform and is
+                    not a licensed broker. Trading is executed through your Deriv account. Contracts for Difference
+                    (CFDs) and other leveraged products involve significant risk of loss and are not suitable for all
+                    investors. Please ensure you fully understand the risks involved before trading.
+                </p>
+                <p class="risk-disclaimer__fine">
+                    © <span id="footer-year"></span> TradersUnit. All rights reserved. TradersUnit is not affiliated
+                    with, endorsed by or sponsored by Deriv unless otherwise stated.
+                </p>
+            </div>
+        </footer>
+
+        <!-- ============ Connect modal ============ -->
+        <div id="connect-modal" class="modal" hidden>
+            <div class="modal__backdrop"></div>
+            <div class="modal__dialog glass">
+                <div class="modal__head">
+                    <h3>Connect your Deriv account</h3>
+                    <button id="connect-close" class="modal__close" type="button" aria-label="Close">&times;</button>
+                </div>
+                <div class="modal__body">
+                    <p class="section__muted">
+                        Paste a Deriv API token to connect your Deriv account and trade in real time. Create one in
+                        the Deriv dashboard under <strong>API token</strong> with scopes <code>read</code> and
+                        <code>trade</code>. Tokens are stored locally in your browser.
+                    </p>
+                    <label class="field-label" for="token-input">Deriv API token</label>
+                    <input id="token-input" class="input" type="password" placeholder="Paste your token…" autocomplete="off" />
+                    <button id="token-apply-btn" class="btn btn--primary btn--lg btn--block" type="button">Connect token</button>
+                    <p id="connect-status" class="form-status" role="status"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============ Bot modal ============ -->
+        <div id="bot-modal" class="modal" hidden>
+            <div class="modal__backdrop"></div>
+            <div class="modal__dialog glass modal__dialog--sm">
+                <div class="modal__head">
+                    <h3 id="bot-modal-title">Strategy</h3>
+                    <button id="bot-modal-close" class="modal__close" type="button" aria-label="Close">&times;</button>
+                </div>
+                <div class="modal__body">
+                    <div id="bot-modal-content" class="bot-config"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="toast-root" class="toast-root" aria-live="polite"></div>
+
+        <script src="/js/config.js"></script>
+        <script src="/js/deriv.js"></script>
+        <script src="/js/app.js"></script>
+    </body>
+</html>
