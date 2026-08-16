@@ -1,10 +1,6 @@
 var BotBlocks = (() => {
-  var __create = Object.create;
   var __defProp = Object.defineProperty;
-  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
   var __getOwnPropNames = Object.getOwnPropertyNames;
-  var __getProtoOf = Object.getPrototypeOf;
-  var __hasOwnProp = Object.prototype.hasOwnProperty;
   var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
   var __esm = (fn, res, err) => function __init() {
     if (err) throw err[0];
@@ -21,22 +17,6 @@ var BotBlocks = (() => {
       throw mod = 0, e;
     }
   };
-  var __copyProps = (to, from, except, desc) => {
-    if (from && typeof from === "object" || typeof from === "function") {
-      for (let key of __getOwnPropNames(from))
-        if (!__hasOwnProp.call(to, key) && key !== except)
-          __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
-    }
-    return to;
-  };
-  var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
-    // If the importer is in node compatibility mode or this is not an ESM
-    // file that has been converted to a CommonJS file using a Babel-
-    // compatible transform (i.e. "__esModule" has not been set), then set
-    // "default" to the CommonJS "module.exports" for node compatibility.
-    isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
-    mod
-  ));
   var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
 
   // bot-shims/translations.js
@@ -62,10 +42,10 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/constants/config.ts
+  // bot-app/src/external/bot-skeleton/constants/config.ts
   var CRYPTO_CURRENCIES, config;
   var init_config = __esm({
-    "bot-app/bot-skeleton/constants/config.ts"() {
+    "bot-app/src/external/bot-skeleton/constants/config.ts"() {
       init_translations();
       CRYPTO_CURRENCIES = ["BTC", "ETH", "LTC", "BCH", "UST"];
       config = () => ({
@@ -409,16 +389,16 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/constants/messages.ts
+  // bot-app/src/external/bot-skeleton/constants/messages.ts
   var init_messages = __esm({
-    "bot-app/bot-skeleton/constants/messages.ts"() {
+    "bot-app/src/external/bot-skeleton/constants/messages.ts"() {
     }
   });
 
-  // bot-app/bot-skeleton/utils/error-config.js
+  // bot-app/src/external/bot-skeleton/utils/error-config.js
   var generateErrorMessage, error_message_map;
   var init_error_config = __esm({
-    "bot-app/bot-skeleton/utils/error-config.js"() {
+    "bot-app/src/external/bot-skeleton/utils/error-config.js"() {
       init_translations();
       generateErrorMessage = (block_type, missing_space = "workspace") => {
         return {
@@ -462,10 +442,10 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/constants/save-type.ts
+  // bot-app/src/external/bot-skeleton/constants/save-type.ts
   var save_types;
   var init_save_type = __esm({
-    "bot-app/bot-skeleton/constants/save-type.ts"() {
+    "bot-app/src/external/bot-skeleton/constants/save-type.ts"() {
       save_types = Object.freeze({
         UNSAVED: "unsaved",
         LOCAL: "local",
@@ -474,9 +454,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/constants/index.ts
+  // bot-app/src/external/bot-skeleton/constants/index.ts
   var init_constants = __esm({
-    "bot-app/bot-skeleton/constants/index.ts"() {
+    "bot-app/src/external/bot-skeleton/constants/index.ts"() {
       init_config();
       init_messages();
       init_save_type();
@@ -501,9 +481,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/utils/local-storage.js
+  // bot-app/src/external/bot-skeleton/utils/local-storage.js
   var init_local_storage = __esm({
-    "bot-app/bot-skeleton/utils/local-storage.js"() {
+    "bot-app/src/external/bot-skeleton/utils/local-storage.js"() {
       init_localforage();
       init_lz_string();
       init_constants();
@@ -5229,10 +5209,10 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/utils/observer.js
+  // bot-app/src/external/bot-skeleton/utils/observer.js
   var Observer, observer;
   var init_observer = __esm({
-    "bot-app/bot-skeleton/utils/observer.js"() {
+    "bot-app/src/external/bot-skeleton/utils/observer.js"() {
       init_immutable_es();
       Observer = class {
         constructor() {
@@ -5297,10 +5277,10 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/utils/workspace.js
+  // bot-app/src/external/bot-skeleton/utils/workspace.js
   var removeLimitedBlocks;
   var init_workspace = __esm({
-    "bot-app/bot-skeleton/utils/workspace.js"() {
+    "bot-app/src/external/bot-skeleton/utils/workspace.js"() {
       init_config();
       removeLimitedBlocks = (workspace, block_types) => {
         const types = Array.isArray(block_types) ? block_types : [block_types];
@@ -5367,10 +5347,10 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/utils/index.js
+  // bot-app/src/external/bot-skeleton/scratch/utils/index.js
   var inject_workspace_options, loadBlocksFromHeader, loadBlocksFromRemote, addLoaderBlocksFirst, addDomAsBlock, runGroupedEvents, runIrreversibleEvents, emptyTextValidator, downloadBlock, download_option, excludeOptionFromContextMenu, all_context_menu_options, deleteBlocksLocaleText, deleteAllBlocksLocaleText, modifyContextMenu, evaluateExpression, appendCollapsedMainBlocksFields, appendCollapsedProcedureBlocksFields, setCurrency;
   var init_utils = __esm({
-    "bot-app/bot-skeleton/scratch/utils/index.js"() {
+    "bot-app/src/external/bot-skeleton/scratch/utils/index.js"() {
       init_bot_notification();
       init_bot_notification();
       init_shared();
@@ -5646,9 +5626,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Advanced/Functions/procedures_defnoreturn.js
-  var require_procedures_defnoreturn = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Advanced/Functions/procedures_defnoreturn.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/Functions/procedures_defnoreturn.js
+  var init_procedures_defnoreturn = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/Functions/procedures_defnoreturn.js"() {
       init_translations();
       init_utils();
       init_block_images();
@@ -5983,9 +5963,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Advanced/Functions/procedures_defreturn.js
-  var require_procedures_defreturn = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Advanced/Functions/procedures_defreturn.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/Functions/procedures_defreturn.js
+  var init_procedures_defreturn = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/Functions/procedures_defreturn.js"() {
       init_translations();
       init_block_images();
       window.Blockly.Blocks.procedures_defreturn = {
@@ -6091,9 +6071,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Advanced/Functions/procedures_callnoreturn.js
-  var require_procedures_callnoreturn = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Advanced/Functions/procedures_callnoreturn.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/Functions/procedures_callnoreturn.js
+  var init_procedures_callnoreturn = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/Functions/procedures_callnoreturn.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.procedures_callnoreturn = {
@@ -6384,9 +6364,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Advanced/Functions/procedures_callreturn.js
-  var require_procedures_callreturn = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Advanced/Functions/procedures_callreturn.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/Functions/procedures_callreturn.js
+  var init_procedures_callreturn = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/Functions/procedures_callreturn.js"() {
       init_translations();
       window.Blockly.Blocks.procedures_callreturn = {
         init() {
@@ -6454,9 +6434,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Advanced/Functions/procedures_ifreturn.js
-  var require_procedures_ifreturn = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Advanced/Functions/procedures_ifreturn.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/Functions/procedures_ifreturn.js
+  var init_procedures_ifreturn = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/Functions/procedures_ifreturn.js"() {
       init_translations();
       window.Blockly.Blocks.procedures_ifreturn = {
         init() {
@@ -6596,20 +6576,20 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Advanced/Functions/index.js
-  var require_Functions = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Advanced/Functions/index.js"() {
-      var import_procedures_defnoreturn = __toESM(require_procedures_defnoreturn());
-      var import_procedures_defreturn = __toESM(require_procedures_defreturn());
-      var import_procedures_callnoreturn = __toESM(require_procedures_callnoreturn());
-      var import_procedures_callreturn = __toESM(require_procedures_callreturn());
-      var import_procedures_ifreturn = __toESM(require_procedures_ifreturn());
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/Functions/index.js
+  var init_Functions = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/Functions/index.js"() {
+      init_procedures_defnoreturn();
+      init_procedures_defreturn();
+      init_procedures_callnoreturn();
+      init_procedures_callreturn();
+      init_procedures_ifreturn();
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Advanced/List/lists_create_with.js
-  var require_lists_create_with = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Advanced/List/lists_create_with.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/List/lists_create_with.js
+  var init_lists_create_with = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/List/lists_create_with.js"() {
       init_translations();
       init_utils();
       init_block_images();
@@ -6708,9 +6688,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Advanced/List/lists_repeat.js
-  var require_lists_repeat = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Advanced/List/lists_repeat.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/List/lists_repeat.js
+  var init_lists_repeat = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/List/lists_repeat.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.lists_repeat = {
@@ -6786,9 +6766,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Advanced/List/lists_length.js
-  var require_lists_length = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Advanced/List/lists_length.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/List/lists_length.js
+  var init_lists_length = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/List/lists_length.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.lists_length = {
@@ -6841,9 +6821,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Advanced/List/lists_isEmpty.js
-  var require_lists_isEmpty = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Advanced/List/lists_isEmpty.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/List/lists_isEmpty.js
+  var init_lists_isEmpty = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/List/lists_isEmpty.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.lists_isEmpty = {
@@ -6900,9 +6880,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Advanced/List/lists_indexOf.js
-  var require_lists_indexOf = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Advanced/List/lists_indexOf.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/List/lists_indexOf.js
+  var init_lists_indexOf = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/List/lists_indexOf.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.lists_indexOf = {
@@ -6984,9 +6964,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Advanced/List/lists_getIndex.js
-  var require_lists_getIndex = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Advanced/List/lists_getIndex.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/List/lists_getIndex.js
+  var init_lists_getIndex = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/List/lists_getIndex.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.lists_getIndex = {
@@ -7153,9 +7133,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Advanced/List/lists_setIndex.js
-  var require_lists_setIndex = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Advanced/List/lists_setIndex.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/List/lists_setIndex.js
+  var init_lists_setIndex = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/List/lists_setIndex.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.lists_setIndex = {
@@ -7319,9 +7299,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Advanced/List/lists_getSublist.js
-  var require_lists_getSublist = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Advanced/List/lists_getSublist.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/List/lists_getSublist.js
+  var init_lists_getSublist = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/List/lists_getSublist.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.lists_getSublist = {
@@ -7483,9 +7463,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Advanced/List/lists_split.js
-  var require_lists_split = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Advanced/List/lists_split.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/List/lists_split.js
+  var init_lists_split = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/List/lists_split.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.lists_split = {
@@ -7572,9 +7552,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Advanced/List/lists_sort.js
-  var require_lists_sort = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Advanced/List/lists_sort.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/List/lists_sort.js
+  var init_lists_sort = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/List/lists_sort.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.lists_sort = {
@@ -7671,9 +7651,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Advanced/List/lists_statement.js
-  var require_lists_statement = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Advanced/List/lists_statement.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/List/lists_statement.js
+  var init_lists_statement = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/List/lists_statement.js"() {
       init_translations();
       init_utils();
       init_block_images();
@@ -7764,26 +7744,26 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Advanced/List/index.js
-  var require_List = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Advanced/List/index.js"() {
-      var import_lists_create_with = __toESM(require_lists_create_with());
-      var import_lists_repeat = __toESM(require_lists_repeat());
-      var import_lists_length = __toESM(require_lists_length());
-      var import_lists_isEmpty = __toESM(require_lists_isEmpty());
-      var import_lists_indexOf = __toESM(require_lists_indexOf());
-      var import_lists_getIndex = __toESM(require_lists_getIndex());
-      var import_lists_setIndex = __toESM(require_lists_setIndex());
-      var import_lists_getSublist = __toESM(require_lists_getSublist());
-      var import_lists_split = __toESM(require_lists_split());
-      var import_lists_sort = __toESM(require_lists_sort());
-      var import_lists_statement = __toESM(require_lists_statement());
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/List/index.js
+  var init_List = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/List/index.js"() {
+      init_lists_create_with();
+      init_lists_repeat();
+      init_lists_length();
+      init_lists_isEmpty();
+      init_lists_indexOf();
+      init_lists_getIndex();
+      init_lists_setIndex();
+      init_lists_getSublist();
+      init_lists_split();
+      init_lists_sort();
+      init_lists_statement();
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Advanced/Loops/controls_repeat_ext.js
-  var require_controls_repeat_ext = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Advanced/Loops/controls_repeat_ext.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/Loops/controls_repeat_ext.js
+  var init_controls_repeat_ext = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/Loops/controls_repeat_ext.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.controls_repeat_ext = {
@@ -7871,9 +7851,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Advanced/Loops/controls_repeat.js
-  var require_controls_repeat = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Advanced/Loops/controls_repeat.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/Loops/controls_repeat.js
+  var init_controls_repeat = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/Loops/controls_repeat.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.controls_repeat = {
@@ -7927,9 +7907,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Advanced/Loops/controls_whileUntil.js
-  var require_controls_whileUntil = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Advanced/Loops/controls_whileUntil.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/Loops/controls_whileUntil.js
+  var init_controls_whileUntil = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/Loops/controls_whileUntil.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.controls_whileUntil = {
@@ -8020,9 +8000,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Advanced/Loops/controls_for.js
-  var require_controls_for = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Advanced/Loops/controls_for.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/Loops/controls_for.js
+  var init_controls_for = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/Loops/controls_for.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.controls_for = {
@@ -8178,9 +8158,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Advanced/Loops/controls_forEach.js
-  var require_controls_forEach = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Advanced/Loops/controls_forEach.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/Loops/controls_forEach.js
+  var init_controls_forEach = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/Loops/controls_forEach.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.controls_forEach = {
@@ -8275,9 +8255,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Advanced/Loops/controls_flow_statements.js
-  var require_controls_flow_statements = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Advanced/Loops/controls_flow_statements.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/Loops/controls_flow_statements.js
+  var init_controls_flow_statements = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/Loops/controls_flow_statements.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.controls_flow_statements = {
@@ -8329,21 +8309,21 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Advanced/Loops/index.js
-  var require_Loops = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Advanced/Loops/index.js"() {
-      var import_controls_repeat_ext = __toESM(require_controls_repeat_ext());
-      var import_controls_repeat = __toESM(require_controls_repeat());
-      var import_controls_whileUntil = __toESM(require_controls_whileUntil());
-      var import_controls_for = __toESM(require_controls_for());
-      var import_controls_forEach = __toESM(require_controls_forEach());
-      var import_controls_flow_statements = __toESM(require_controls_flow_statements());
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/Loops/index.js
+  var init_Loops = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/Loops/index.js"() {
+      init_controls_repeat_ext();
+      init_controls_repeat();
+      init_controls_whileUntil();
+      init_controls_for();
+      init_controls_forEach();
+      init_controls_flow_statements();
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Advanced/Variable/variables_get.js
-  var require_variables_get = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Advanced/Variable/variables_get.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/Variable/variables_get.js
+  var init_variables_get = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/Variable/variables_get.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.variables_get = {
@@ -8414,9 +8394,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Advanced/Variable/variables_set.js
-  var require_variables_set = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Advanced/Variable/variables_set.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/Variable/variables_set.js
+  var init_variables_set = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/Variable/variables_set.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.variables_set = {
@@ -8477,17 +8457,17 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Advanced/Variable/index.js
-  var require_Variable = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Advanced/Variable/index.js"() {
-      var import_variables_get = __toESM(require_variables_get());
-      var import_variables_set = __toESM(require_variables_set());
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/Variable/index.js
+  var init_Variable = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Advanced/Variable/index.js"() {
+      init_variables_get();
+      init_variables_set();
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/After Purchase/after_purchase.js
-  var require_after_purchase = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/After Purchase/after_purchase.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/After Purchase/after_purchase.js
+  var init_after_purchase = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/After Purchase/after_purchase.js"() {
       init_translations();
       init_utils();
       init_block_images();
@@ -8571,9 +8551,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/After Purchase/check_result.js
-  var require_check_result = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/After Purchase/check_result.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/After Purchase/check_result.js
+  var init_check_result = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/After Purchase/check_result.js"() {
       init_translations();
       init_config();
       init_utils();
@@ -8632,9 +8612,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/After Purchase/read_details.js
-  var require_read_details = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/After Purchase/read_details.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/After Purchase/read_details.js
+  var init_read_details = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/After Purchase/read_details.js"() {
       init_translations();
       init_config();
       init_utils();
@@ -8681,9 +8661,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/After Purchase/trade_again.js
-  var require_trade_again = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/After Purchase/trade_again.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/After Purchase/trade_again.js
+  var init_trade_again = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/After Purchase/trade_again.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.trade_again = {
@@ -8728,19 +8708,19 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/After Purchase/index.js
-  var require_After_Purchase = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/After Purchase/index.js"() {
-      var import_after_purchase = __toESM(require_after_purchase());
-      var import_check_result = __toESM(require_check_result());
-      var import_read_details = __toESM(require_read_details());
-      var import_trade_again = __toESM(require_trade_again());
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/After Purchase/index.js
+  var init_After_Purchase = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/After Purchase/index.js"() {
+      init_after_purchase();
+      init_check_result();
+      init_read_details();
+      init_trade_again();
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Before Purchase/before_purchase.js
-  var require_before_purchase = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Before Purchase/before_purchase.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Before Purchase/before_purchase.js
+  var init_before_purchase = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Before Purchase/before_purchase.js"() {
       init_translations();
       init_utils();
       init_block_images();
@@ -8827,9 +8807,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Before Purchase/purchase.js
-  var require_purchase = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Before Purchase/purchase.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Before Purchase/purchase.js
+  var init_purchase = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Before Purchase/purchase.js"() {
       init_translations();
       init_scratch_shared_shim();
       init_utils();
@@ -8916,9 +8896,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Before Purchase/ask_price.js
-  var require_ask_price = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Before Purchase/ask_price.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Before Purchase/ask_price.js
+  var init_ask_price = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Before Purchase/ask_price.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.ask_price = {
@@ -8967,9 +8947,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Before Purchase/payout.js
-  var require_payout = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Before Purchase/payout.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Before Purchase/payout.js
+  var init_payout = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Before Purchase/payout.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.payout = {
@@ -9018,19 +8998,19 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Before Purchase/index.js
-  var require_Before_Purchase = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Before Purchase/index.js"() {
-      var import_before_purchase = __toESM(require_before_purchase());
-      var import_purchase = __toESM(require_purchase());
-      var import_ask_price = __toESM(require_ask_price());
-      var import_payout = __toESM(require_payout());
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Before Purchase/index.js
+  var init_Before_Purchase = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Before Purchase/index.js"() {
+      init_before_purchase();
+      init_purchase();
+      init_ask_price();
+      init_payout();
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/During Purchase/during_purchase.js
-  var require_during_purchase = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/During Purchase/during_purchase.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/During Purchase/during_purchase.js
+  var init_during_purchase = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/During Purchase/during_purchase.js"() {
       init_translations();
       init_utils();
       init_block_images();
@@ -9114,9 +9094,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/During Purchase/sell_at_market.js
-  var require_sell_at_market = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/During Purchase/sell_at_market.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/During Purchase/sell_at_market.js
+  var init_sell_at_market = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/During Purchase/sell_at_market.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.sell_at_market = {
@@ -9150,9 +9130,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/During Purchase/check_sell.js
-  var require_check_sell = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/During Purchase/check_sell.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/During Purchase/check_sell.js
+  var init_check_sell = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/During Purchase/check_sell.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.check_sell = {
@@ -9191,9 +9171,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/During Purchase/sell_price.js
-  var require_sell_price = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/During Purchase/sell_price.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/During Purchase/sell_price.js
+  var init_sell_price = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/During Purchase/sell_price.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.sell_price = {
@@ -9232,19 +9212,19 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/During Purchase/index.js
-  var require_During_Purchase = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/During Purchase/index.js"() {
-      var import_during_purchase = __toESM(require_during_purchase());
-      var import_sell_at_market = __toESM(require_sell_at_market());
-      var import_check_sell = __toESM(require_check_sell());
-      var import_sell_price = __toESM(require_sell_price());
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/During Purchase/index.js
+  var init_During_Purchase = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/During Purchase/index.js"() {
+      init_during_purchase();
+      init_sell_at_market();
+      init_check_sell();
+      init_sell_price();
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/bb_statement.js
-  var require_bb_statement = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/bb_statement.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/bb_statement.js
+  var init_bb_statement = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/bb_statement.js"() {
       init_translations();
       init_config();
       init_utils();
@@ -9341,9 +9321,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/bba_statement.js
-  var require_bba_statement = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/bba_statement.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/bba_statement.js
+  var init_bba_statement = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/bba_statement.js"() {
       init_translations();
       init_config();
       init_utils();
@@ -9426,9 +9406,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/ema_statement.js
-  var require_ema_statement = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/ema_statement.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/ema_statement.js
+  var init_ema_statement = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/ema_statement.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.ema_statement = {
@@ -9497,9 +9477,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/emaa_statement.js
-  var require_emaa_statement = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/emaa_statement.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/emaa_statement.js
+  var init_emaa_statement = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/emaa_statement.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.emaa_statement = {
@@ -9568,9 +9548,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/rsi_statement.js
-  var require_rsi_statement = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/rsi_statement.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/rsi_statement.js
+  var init_rsi_statement = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/rsi_statement.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.rsi_statement = {
@@ -9639,9 +9619,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/rsia_statement.js
-  var require_rsia_statement = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/rsia_statement.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/rsia_statement.js
+  var init_rsia_statement = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/rsia_statement.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.rsia_statement = {
@@ -9710,9 +9690,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/sma_statement.js
-  var require_sma_statement = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/sma_statement.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/sma_statement.js
+  var init_sma_statement = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/sma_statement.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.sma_statement = {
@@ -9781,9 +9761,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/smaa_statement.js
-  var require_smaa_statement = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/smaa_statement.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/smaa_statement.js
+  var init_smaa_statement = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/smaa_statement.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.smaa_statement = {
@@ -9852,9 +9832,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/macda_statement.js
-  var require_macda_statement = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/macda_statement.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/macda_statement.js
+  var init_macda_statement = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/macda_statement.js"() {
       init_translations();
       init_config();
       init_utils();
@@ -9937,9 +9917,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/Parts/input_list.js
-  var require_input_list = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/Parts/input_list.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/Parts/input_list.js
+  var init_input_list = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/Parts/input_list.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.input_list = {
@@ -10019,9 +9999,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/Parts/period.js
-  var require_period = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/Parts/period.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/Parts/period.js
+  var init_period = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/Parts/period.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.period = {
@@ -10070,9 +10050,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/Parts/std_dev_multiplier_up.js
-  var require_std_dev_multiplier_up = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/Parts/std_dev_multiplier_up.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/Parts/std_dev_multiplier_up.js
+  var init_std_dev_multiplier_up = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/Parts/std_dev_multiplier_up.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.std_dev_multiplier_up = {
@@ -10111,9 +10091,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/Parts/std_dev_multiplier_down.js
-  var require_std_dev_multiplier_down = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/Parts/std_dev_multiplier_down.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/Parts/std_dev_multiplier_down.js
+  var init_std_dev_multiplier_down = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/Parts/std_dev_multiplier_down.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.std_dev_multiplier_down = {
@@ -10152,9 +10132,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/Parts/fast_ema_period.js
-  var require_fast_ema_period = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/Parts/fast_ema_period.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/Parts/fast_ema_period.js
+  var init_fast_ema_period = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/Parts/fast_ema_period.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.fast_ema_period = {
@@ -10193,9 +10173,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/Parts/slow_ema_period.js
-  var require_slow_ema_period = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/Parts/slow_ema_period.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/Parts/slow_ema_period.js
+  var init_slow_ema_period = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/Parts/slow_ema_period.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.slow_ema_period = {
@@ -10234,9 +10214,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/Parts/signal_ema_period.js
-  var require_signal_ema_period = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/Parts/signal_ema_period.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/Parts/signal_ema_period.js
+  var init_signal_ema_period = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/Parts/signal_ema_period.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.signal_ema_period = {
@@ -10275,38 +10255,38 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/Parts/index.js
-  var require_Parts = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/Parts/index.js"() {
-      var import_input_list = __toESM(require_input_list());
-      var import_period = __toESM(require_period());
-      var import_std_dev_multiplier_up = __toESM(require_std_dev_multiplier_up());
-      var import_std_dev_multiplier_down = __toESM(require_std_dev_multiplier_down());
-      var import_fast_ema_period = __toESM(require_fast_ema_period());
-      var import_slow_ema_period = __toESM(require_slow_ema_period());
-      var import_signal_ema_period = __toESM(require_signal_ema_period());
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/Parts/index.js
+  var init_Parts = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/Parts/index.js"() {
+      init_input_list();
+      init_period();
+      init_std_dev_multiplier_up();
+      init_std_dev_multiplier_down();
+      init_fast_ema_period();
+      init_slow_ema_period();
+      init_signal_ema_period();
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/index.js
-  var require_Indicators = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Indicators/index.js"() {
-      var import_bb_statement = __toESM(require_bb_statement());
-      var import_bba_statement = __toESM(require_bba_statement());
-      var import_ema_statement = __toESM(require_ema_statement());
-      var import_emaa_statement = __toESM(require_emaa_statement());
-      var import_rsi_statement = __toESM(require_rsi_statement());
-      var import_rsia_statement = __toESM(require_rsia_statement());
-      var import_sma_statement = __toESM(require_sma_statement());
-      var import_smaa_statement = __toESM(require_smaa_statement());
-      var import_macda_statement = __toESM(require_macda_statement());
-      var import_Parts = __toESM(require_Parts());
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/index.js
+  var init_Indicators = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Indicators/index.js"() {
+      init_bb_statement();
+      init_bba_statement();
+      init_ema_statement();
+      init_emaa_statement();
+      init_rsi_statement();
+      init_rsia_statement();
+      init_sma_statement();
+      init_smaa_statement();
+      init_macda_statement();
+      init_Parts();
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tick Analysis/tick.js
-  var require_tick = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tick Analysis/tick.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tick Analysis/tick.js
+  var init_tick = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tick Analysis/tick.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.tick = {
@@ -10377,9 +10357,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tick Analysis/ticks.js
-  var require_ticks = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tick Analysis/ticks.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tick Analysis/ticks.js
+  var init_ticks = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tick Analysis/ticks.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.ticks = {
@@ -10450,9 +10430,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tick Analysis/ohlc.js
-  var require_ohlc = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tick Analysis/ohlc.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tick Analysis/ohlc.js
+  var init_ohlc = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tick Analysis/ohlc.js"() {
       init_translations();
       init_config();
       init_utils();
@@ -10500,9 +10480,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tick Analysis/ohlc_values.js
-  var require_ohlc_values = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tick Analysis/ohlc_values.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tick Analysis/ohlc_values.js
+  var init_ohlc_values = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tick Analysis/ohlc_values.js"() {
       init_translations();
       init_config();
       init_utils();
@@ -10564,9 +10544,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tick Analysis/readOhlc.js
-  var require_readOhlc = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tick Analysis/readOhlc.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tick Analysis/readOhlc.js
+  var init_readOhlc = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tick Analysis/readOhlc.js"() {
       init_translations();
       init_config();
       init_utils();
@@ -10639,9 +10619,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tick Analysis/get_ohlc.js
-  var require_get_ohlc = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tick Analysis/get_ohlc.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tick Analysis/get_ohlc.js
+  var init_get_ohlc = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tick Analysis/get_ohlc.js"() {
       init_translations();
       init_config();
       init_utils();
@@ -10705,9 +10685,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tick Analysis/check_direction.js
-  var require_check_direction = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tick Analysis/check_direction.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tick Analysis/check_direction.js
+  var init_check_direction = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tick Analysis/check_direction.js"() {
       init_translations();
       init_config();
       init_utils();
@@ -10754,9 +10734,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tick Analysis/tick_analysis.js
-  var require_tick_analysis = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tick Analysis/tick_analysis.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tick Analysis/tick_analysis.js
+  var init_tick_analysis = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tick Analysis/tick_analysis.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.tick_analysis = {
@@ -10812,9 +10792,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tick Analysis/last_digit.js
-  var require_last_digit = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tick Analysis/last_digit.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tick Analysis/last_digit.js
+  var init_last_digit = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tick Analysis/last_digit.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.last_digit = {
@@ -10850,9 +10830,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tick Analysis/lastDigitList.js
-  var require_lastDigitList = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tick Analysis/lastDigitList.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tick Analysis/lastDigitList.js
+  var init_lastDigitList = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tick Analysis/lastDigitList.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.lastDigitList = {
@@ -10888,9 +10868,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tick Analysis/stat.js
-  var require_stat = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tick Analysis/stat.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tick Analysis/stat.js
+  var init_stat = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tick Analysis/stat.js"() {
       init_translations();
       init_utils();
       Blockly.Blocks.stat = {
@@ -10926,9 +10906,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tick Analysis/stat_list.js
-  var require_stat_list = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tick Analysis/stat_list.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tick Analysis/stat_list.js
+  var init_stat_list = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tick Analysis/stat_list.js"() {
       init_translations();
       init_utils();
       Blockly.Blocks.stat_list = {
@@ -10964,27 +10944,27 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tick Analysis/index.js
-  var require_Tick_Analysis = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tick Analysis/index.js"() {
-      var import_tick = __toESM(require_tick());
-      var import_ticks = __toESM(require_ticks());
-      var import_ohlc = __toESM(require_ohlc());
-      var import_ohlc_values = __toESM(require_ohlc_values());
-      var import_readOhlc = __toESM(require_readOhlc());
-      var import_get_ohlc = __toESM(require_get_ohlc());
-      var import_check_direction = __toESM(require_check_direction());
-      var import_tick_analysis = __toESM(require_tick_analysis());
-      var import_last_digit = __toESM(require_last_digit());
-      var import_lastDigitList = __toESM(require_lastDigitList());
-      var import_stat = __toESM(require_stat());
-      var import_stat_list = __toESM(require_stat_list());
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tick Analysis/index.js
+  var init_Tick_Analysis = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tick Analysis/index.js"() {
+      init_tick();
+      init_ticks();
+      init_ohlc();
+      init_ohlc_values();
+      init_readOhlc();
+      init_get_ohlc();
+      init_check_direction();
+      init_tick_analysis();
+      init_last_digit();
+      init_lastDigitList();
+      init_stat();
+      init_stat_list();
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Candle/is_candle_black.js
-  var require_is_candle_black = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Candle/is_candle_black.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Candle/is_candle_black.js
+  var init_is_candle_black = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Candle/is_candle_black.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.is_candle_black = {
@@ -11039,9 +11019,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Candle/ohlc_values_in_list.js
-  var require_ohlc_values_in_list = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Candle/ohlc_values_in_list.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Candle/ohlc_values_in_list.js
+  var init_ohlc_values_in_list = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Candle/ohlc_values_in_list.js"() {
       init_translations();
       init_config();
       init_utils();
@@ -11103,9 +11083,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Candle/read_ohlc_obj.js
-  var require_read_ohlc_obj = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Candle/read_ohlc_obj.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Candle/read_ohlc_obj.js
+  var init_read_ohlc_obj = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Candle/read_ohlc_obj.js"() {
       init_translations();
       init_config();
       init_utils();
@@ -11167,18 +11147,18 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Candle/index.js
-  var require_Candle = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Candle/index.js"() {
-      var import_is_candle_black = __toESM(require_is_candle_black());
-      var import_ohlc_values_in_list = __toESM(require_ohlc_values_in_list());
-      var import_read_ohlc_obj = __toESM(require_read_ohlc_obj());
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Candle/index.js
+  var init_Candle = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Candle/index.js"() {
+      init_is_candle_black();
+      init_ohlc_values_in_list();
+      init_read_ohlc_obj();
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Misc/balance.js
-  var require_balance = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Misc/balance.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Misc/balance.js
+  var init_balance = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Misc/balance.js"() {
       init_translations();
       init_config();
       init_utils();
@@ -11235,9 +11215,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Misc/barrier_offset.js
-  var require_barrier_offset = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Misc/barrier_offset.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Misc/barrier_offset.js
+  var init_barrier_offset = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Misc/barrier_offset.js"() {
       init_translations();
       init_config();
       init_utils();
@@ -11270,9 +11250,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Misc/block_holder.js
-  var require_block_holder = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Misc/block_holder.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Misc/block_holder.js
+  var init_block_holder = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Misc/block_holder.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.block_holder = {
@@ -11320,9 +11300,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Misc/loader.js
-  var require_loader = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Misc/loader.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Misc/loader.js
+  var init_loader = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Misc/loader.js"() {
       init_translations();
       init_messages();
       init_observer();
@@ -11415,9 +11395,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Misc/notify.js
-  var require_notify = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Misc/notify.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Misc/notify.js
+  var init_notify = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Misc/notify.js"() {
       init_translations();
       init_config();
       init_utils();
@@ -11499,9 +11479,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Misc/notify_telegram.js
-  var require_notify_telegram = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Misc/notify_telegram.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Misc/notify_telegram.js
+  var init_notify_telegram = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Misc/notify_telegram.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.notify_telegram = {
@@ -11581,9 +11561,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Misc/total_profit.js
-  var require_total_profit = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Misc/total_profit.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Misc/total_profit.js
+  var init_total_profit = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Misc/total_profit.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.total_profit = {
@@ -11660,9 +11640,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Misc/total_runs.js
-  var require_total_runs = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Misc/total_runs.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Misc/total_runs.js
+  var init_total_runs = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Misc/total_runs.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.total_runs = {
@@ -11701,9 +11681,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Misc/useless_block.js
-  var require_useless_block = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Misc/useless_block.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Misc/useless_block.js
+  var init_useless_block = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Misc/useless_block.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.useless_block = {
@@ -11735,9 +11715,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Misc/console.js
-  var require_console = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Misc/console.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Misc/console.js
+  var init_console = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Misc/console.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.console = {
@@ -11807,25 +11787,25 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Misc/index.js
-  var require_Misc = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Misc/index.js"() {
-      var import_balance = __toESM(require_balance());
-      var import_barrier_offset = __toESM(require_barrier_offset());
-      var import_block_holder = __toESM(require_block_holder());
-      var import_loader = __toESM(require_loader());
-      var import_notify = __toESM(require_notify());
-      var import_notify_telegram = __toESM(require_notify_telegram());
-      var import_total_profit = __toESM(require_total_profit());
-      var import_total_runs = __toESM(require_total_runs());
-      var import_useless_block = __toESM(require_useless_block());
-      var import_console = __toESM(require_console());
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Misc/index.js
+  var init_Misc = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Misc/index.js"() {
+      init_balance();
+      init_barrier_offset();
+      init_block_holder();
+      init_loader();
+      init_notify();
+      init_notify_telegram();
+      init_total_profit();
+      init_total_runs();
+      init_useless_block();
+      init_console();
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Time/epoch.js
-  var require_epoch = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Time/epoch.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Time/epoch.js
+  var init_epoch = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Time/epoch.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.epoch = {
@@ -11861,9 +11841,9 @@ var BotBlocks = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Time/timeout.js
-  var require_timeout = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Time/timeout.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Time/timeout.js
+  var init_timeout = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Time/timeout.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.timeout = {
@@ -11931,9 +11911,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Time/todatetime.js
-  var require_todatetime = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Time/todatetime.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Time/todatetime.js
+  var init_todatetime = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Time/todatetime.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.todatetime = {
@@ -12034,9 +12014,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Time/totimestamp.js
-  var require_totimestamp = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Time/totimestamp.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Time/totimestamp.js
+  var init_totimestamp = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Time/totimestamp.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.totimestamp = {
@@ -12096,9 +12076,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Time/tickdelay.js
-  var require_tickdelay = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Time/tickdelay.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Time/tickdelay.js
+  var init_tickdelay = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Time/tickdelay.js"() {
       init_translations();
       init_dbot_store_shim();
       init_utils();
@@ -12182,49 +12162,49 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Time/index.js
-  var require_Time = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Tools/Time/index.js"() {
-      var import_epoch = __toESM(require_epoch());
-      var import_timeout = __toESM(require_timeout());
-      var import_todatetime = __toESM(require_todatetime());
-      var import_totimestamp = __toESM(require_totimestamp());
-      var import_tickdelay = __toESM(require_tickdelay());
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Time/index.js
+  var init_Time = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Tools/Time/index.js"() {
+      init_epoch();
+      init_timeout();
+      init_todatetime();
+      init_totimestamp();
+      init_tickdelay();
     }
   });
 
-  // bot-app/bot-skeleton/scratch/hooks/colours.js
+  // bot-app/src/external/bot-skeleton/scratch/hooks/colours.js
   var init_colours = __esm({
-    "bot-app/bot-skeleton/scratch/hooks/colours.js"() {
+    "bot-app/src/external/bot-skeleton/scratch/hooks/colours.js"() {
     }
   });
 
-  // bot-app/bot-skeleton/utils/contract.js
+  // bot-app/src/external/bot-skeleton/utils/contract.js
   var init_contract = __esm({
-    "bot-app/bot-skeleton/utils/contract.js"() {
+    "bot-app/src/external/bot-skeleton/utils/contract.js"() {
       init_translations();
       init_config();
     }
   });
 
-  // bot-app/bot-skeleton/utils/date-time-helper.js
+  // bot-app/src/external/bot-skeleton/utils/date-time-helper.js
   var init_date_time_helper = __esm({
-    "bot-app/bot-skeleton/utils/date-time-helper.js"() {
+    "bot-app/src/external/bot-skeleton/utils/date-time-helper.js"() {
       init_translations();
     }
   });
 
-  // bot-app/bot-skeleton/utils/error.js
+  // bot-app/src/external/bot-skeleton/utils/error.js
   var init_error = __esm({
-    "bot-app/bot-skeleton/utils/error.js"() {
+    "bot-app/src/external/bot-skeleton/utils/error.js"() {
       init_observer();
     }
   });
 
-  // bot-app/bot-skeleton/utils/error-handling.js
+  // bot-app/src/external/bot-skeleton/utils/error-handling.js
   var onKeyDownHandleError, removeErrorHandlingEventListener, initErrorHandlingListener, handleError;
   var init_error_handling = __esm({
-    "bot-app/bot-skeleton/utils/error-handling.js"() {
+    "bot-app/src/external/bot-skeleton/utils/error-handling.js"() {
       init_error_config();
       init_observer();
       onKeyDownHandleError = (event) => {
@@ -12254,21 +12234,21 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/utils/html-helper.js
+  // bot-app/src/external/bot-skeleton/utils/html-helper.js
   var init_html_helper = __esm({
-    "bot-app/bot-skeleton/utils/html-helper.js"() {
+    "bot-app/src/external/bot-skeleton/utils/html-helper.js"() {
     }
   });
 
-  // bot-app/bot-skeleton/utils/strategy-helper.js
+  // bot-app/src/external/bot-skeleton/utils/strategy-helper.js
   var init_strategy_helper = __esm({
-    "bot-app/bot-skeleton/utils/strategy-helper.js"() {
+    "bot-app/src/external/bot-skeleton/utils/strategy-helper.js"() {
     }
   });
 
-  // bot-app/bot-skeleton/utils/index.js
+  // bot-app/src/external/bot-skeleton/utils/index.js
   var init_utils2 = __esm({
-    "bot-app/bot-skeleton/utils/index.js"() {
+    "bot-app/src/external/bot-skeleton/utils/index.js"() {
       init_colours();
       init_contract();
       init_date_time_helper();
@@ -12282,9 +12262,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition.js
-  var require_trade_definition = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition.js
+  var init_trade_definition = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition.js"() {
       init_translations();
       init_config();
       init_utils2();
@@ -12502,10 +12482,10 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/services/api/account-limits.js
+  // bot-app/src/external/bot-skeleton/services/api/account-limits.js
   var AccountLimits;
   var init_account_limits = __esm({
-    "bot-app/bot-skeleton/services/api/account-limits.js"() {
+    "bot-app/src/external/bot-skeleton/services/api/account-limits.js"() {
       init_common_data();
       AccountLimits = class {
         constructor(store) {
@@ -12530,7 +12510,7 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/utils/pending-promise.js
+  // bot-app/src/external/bot-skeleton/utils/pending-promise.js
   function PendingPromise() {
     let resolve, reject;
     const promise = new Promise((_resolve, _reject) => {
@@ -12549,7 +12529,7 @@ ${stack}
     return promise;
   }
   var init_pending_promise = __esm({
-    "bot-app/bot-skeleton/utils/pending-promise.js"() {
+    "bot-app/src/external/bot-skeleton/utils/pending-promise.js"() {
     }
   });
 
@@ -12584,10 +12564,10 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/services/api/active-symbols.js
+  // bot-app/src/external/bot-skeleton/services/api/active-symbols.js
   var ActiveSymbols;
   var init_active_symbols = __esm({
-    "bot-app/bot-skeleton/services/api/active-symbols.js"() {
+    "bot-app/src/external/bot-skeleton/services/api/active-symbols.js"() {
       init_common_data();
       init_active_symbol_categorization();
       init_config();
@@ -12807,10 +12787,10 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/services/api/contracts-for.js
+  // bot-app/src/external/bot-skeleton/services/api/contracts-for.js
   var ContractsFor;
   var init_contracts_for = __esm({
-    "bot-app/bot-skeleton/services/api/contracts-for.js"() {
+    "bot-app/src/external/bot-skeleton/services/api/contracts-for.js"() {
       init_common_data();
       init_config();
       init_pending_promise();
@@ -13356,10 +13336,10 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/services/api/trading-times.js
+  // bot-app/src/external/bot-skeleton/services/api/trading-times.js
   var TradingTimes;
   var init_trading_times = __esm({
-    "bot-app/bot-skeleton/services/api/trading-times.js"() {
+    "bot-app/src/external/bot-skeleton/services/api/trading-times.js"() {
       init_common_data();
       init_pending_promise();
       init_api_base_bridge();
@@ -13569,10 +13549,10 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/services/api/api-helpers.js
+  // bot-app/src/external/bot-skeleton/services/api/api-helpers.js
   var _ApiHelpers, ApiHelpers, api_helpers_default;
   var init_api_helpers = __esm({
-    "bot-app/bot-skeleton/services/api/api-helpers.js"() {
+    "bot-app/src/external/bot-skeleton/services/api/api-helpers.js"() {
       init_account_limits();
       init_active_symbols();
       init_contracts_for();
@@ -13603,9 +13583,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_market.js
-  var require_trade_definition_market = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_market.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_market.js
+  var init_trade_definition_market = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_market.js"() {
       init_translations();
       init_api_helpers();
       init_dbot_store_shim();
@@ -13722,9 +13702,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_tradetype.js
-  var require_trade_definition_tradetype = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_tradetype.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_tradetype.js
+  var init_trade_definition_tradetype = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_tradetype.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.trade_definition_tradetype = {
@@ -13767,9 +13747,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_contracttype.js
-  var require_trade_definition_contracttype = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_contracttype.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_contracttype.js
+  var init_trade_definition_contracttype = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_contracttype.js"() {
       init_translations();
       init_config();
       init_scratch_shared_shim();
@@ -13834,9 +13814,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_candleinterval.js
-  var require_trade_definition_candleinterval = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_candleinterval.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_candleinterval.js
+  var init_trade_definition_candleinterval = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_candleinterval.js"() {
       init_translations();
       init_config();
       init_utils();
@@ -13878,9 +13858,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_restartbuysell.js
-  var require_trade_definition_restartbuysell = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_restartbuysell.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_restartbuysell.js
+  var init_trade_definition_restartbuysell = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_restartbuysell.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.trade_definition_restartbuysell = {
@@ -13931,9 +13911,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_restartonerror.js
-  var require_trade_definition_restartonerror = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_restartonerror.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_restartonerror.js
+  var init_trade_definition_restartonerror = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_restartonerror.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.trade_definition_restartonerror = {
@@ -14032,9 +14012,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_tradeoptions.js
-  var require_trade_definition_tradeoptions = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_tradeoptions.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_tradeoptions.js
+  var init_trade_definition_tradeoptions = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_tradeoptions.js"() {
       init_shared();
       init_backend_errors();
       init_rxjs();
@@ -14615,9 +14595,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_multiplier.js
-  var require_trade_definition_multiplier = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_multiplier.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_multiplier.js
+  var init_trade_definition_multiplier = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_multiplier.js"() {
       init_shared();
       init_backend_errors();
       init_translations();
@@ -14921,14 +14901,15 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Trade Definition/multiplier_stop_loss.js
-  var require_multiplier_stop_loss = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Trade Definition/multiplier_stop_loss.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Trade Definition/multiplier_stop_loss.js
+  var description;
+  var init_multiplier_stop_loss = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Trade Definition/multiplier_stop_loss.js"() {
       init_shared();
       init_translations();
       init_config();
       init_utils();
-      var description = localize(
+      description = localize(
         "Your contract is closed automatically when your loss is more than or equals to this amount. This block can only be used with the multipliers trade type."
       );
       window.Blockly.Blocks.multiplier_stop_loss = {
@@ -14999,14 +14980,15 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Trade Definition/accumulator_take_profit.js
-  var require_accumulator_take_profit = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Trade Definition/accumulator_take_profit.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Trade Definition/accumulator_take_profit.js
+  var description2;
+  var init_accumulator_take_profit = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Trade Definition/accumulator_take_profit.js"() {
       init_shared();
       init_translations();
       init_config();
       init_utils();
-      var description = localize(
+      description2 = localize(
         "Your contract is closed automatically when your profit is more than or equals to this amount. This block can only be used with the accumulator trade type."
       );
       window.Blockly.Blocks.accumulator_take_profit = {
@@ -15036,14 +15018,14 @@ ${stack}
             colourTertiary: window.Blockly.Colours.Base.colourTertiary,
             previousStatement: null,
             nextStatement: null,
-            tooltip: description,
+            tooltip: description2,
             category: window.Blockly.Categories.Trade_Definition
           };
         },
         meta() {
           return {
             display_name: localize("Take Profit (Accumulator)"),
-            description
+            description: description2
           };
         },
         onchange(event) {
@@ -15079,14 +15061,15 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Trade Definition/multiplier_take_profit.js
-  var require_multiplier_take_profit = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Trade Definition/multiplier_take_profit.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Trade Definition/multiplier_take_profit.js
+  var description3;
+  var init_multiplier_take_profit = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Trade Definition/multiplier_take_profit.js"() {
       init_shared();
       init_translations();
       init_config();
       init_utils();
-      var description = localize(
+      description3 = localize(
         "Your contract is closed automatically when your profit is more than or equals to this amount. This block can only be used with the multipliers trade type."
       );
       window.Blockly.Blocks.multiplier_take_profit = {
@@ -15116,7 +15099,7 @@ ${stack}
             colourTertiary: window.Blockly.Colours.Base.colourTertiary,
             previousStatement: null,
             nextStatement: null,
-            tooltip: description,
+            tooltip: description3,
             category: window.Blockly.Categories.Trade_Definition
           };
         },
@@ -15126,7 +15109,7 @@ ${stack}
         meta() {
           return {
             display_name: localize("Take Profit (Multiplier)"),
-            description
+            description: description3
           };
         },
         onchange(event) {
@@ -15157,9 +15140,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_accumulator.js
-  var require_trade_definition_accumulator = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_accumulator.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_accumulator.js
+  var init_trade_definition_accumulator = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Trade Definition/trade_definition_accumulator.js"() {
       init_shared();
       init_backend_errors();
       init_translations();
@@ -15427,28 +15410,28 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Binary/Trade Definition/index.js
-  var require_Trade_Definition = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Binary/Trade Definition/index.js"() {
-      var import_trade_definition = __toESM(require_trade_definition());
-      var import_trade_definition_market = __toESM(require_trade_definition_market());
-      var import_trade_definition_tradetype = __toESM(require_trade_definition_tradetype());
-      var import_trade_definition_contracttype = __toESM(require_trade_definition_contracttype());
-      var import_trade_definition_candleinterval = __toESM(require_trade_definition_candleinterval());
-      var import_trade_definition_restartbuysell = __toESM(require_trade_definition_restartbuysell());
-      var import_trade_definition_restartonerror = __toESM(require_trade_definition_restartonerror());
-      var import_trade_definition_tradeoptions = __toESM(require_trade_definition_tradeoptions());
-      var import_trade_definition_multiplier = __toESM(require_trade_definition_multiplier());
-      var import_multiplier_stop_loss = __toESM(require_multiplier_stop_loss());
-      var import_accumulator_take_profit = __toESM(require_accumulator_take_profit());
-      var import_multiplier_take_profit = __toESM(require_multiplier_take_profit());
-      var import_trade_definition_accumulator = __toESM(require_trade_definition_accumulator());
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Trade Definition/index.js
+  var init_Trade_Definition = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Binary/Trade Definition/index.js"() {
+      init_trade_definition();
+      init_trade_definition_market();
+      init_trade_definition_tradetype();
+      init_trade_definition_contracttype();
+      init_trade_definition_candleinterval();
+      init_trade_definition_restartbuysell();
+      init_trade_definition_restartonerror();
+      init_trade_definition_tradeoptions();
+      init_trade_definition_multiplier();
+      init_multiplier_stop_loss();
+      init_accumulator_take_profit();
+      init_multiplier_take_profit();
+      init_trade_definition_accumulator();
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Logic/logic_compare.js
-  var require_logic_compare = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Logic/logic_compare.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Logic/logic_compare.js
+  var init_logic_compare = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Logic/logic_compare.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.logic_compare = {
@@ -15525,9 +15508,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Logic/controls_if.js
-  var require_controls_if = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Logic/controls_if.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Logic/controls_if.js
+  var init_controls_if = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Logic/controls_if.js"() {
       init_translations();
       init_utils();
       init_block_images();
@@ -15826,9 +15809,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Logic/logic_boolean.js
-  var require_logic_boolean = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Logic/logic_boolean.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Logic/logic_boolean.js
+  var init_logic_boolean = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Logic/logic_boolean.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.logic_boolean = {
@@ -15875,9 +15858,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Logic/logic_operation.js
-  var require_logic_operation = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Logic/logic_operation.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Logic/logic_operation.js
+  var init_logic_operation = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Logic/logic_operation.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.logic_operation = {
@@ -15957,9 +15940,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Logic/logic_null.js
-  var require_logic_null = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Logic/logic_null.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Logic/logic_null.js
+  var init_logic_null = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Logic/logic_null.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.logic_null = {
@@ -15996,9 +15979,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Logic/logic_ternary.js
-  var require_logic_ternary = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Logic/logic_ternary.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Logic/logic_ternary.js
+  var init_logic_ternary = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Logic/logic_ternary.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.logic_ternary = {
@@ -16082,9 +16065,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Logic/logic_negate.js
-  var require_logic_negate = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Logic/logic_negate.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Logic/logic_negate.js
+  var init_logic_negate = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Logic/logic_negate.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.logic_negate = {
@@ -16134,22 +16117,22 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Logic/index.js
-  var require_Logic = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Logic/index.js"() {
-      var import_logic_compare = __toESM(require_logic_compare());
-      var import_controls_if = __toESM(require_controls_if());
-      var import_logic_boolean = __toESM(require_logic_boolean());
-      var import_logic_operation = __toESM(require_logic_operation());
-      var import_logic_null = __toESM(require_logic_null());
-      var import_logic_ternary = __toESM(require_logic_ternary());
-      var import_logic_negate = __toESM(require_logic_negate());
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Logic/index.js
+  var init_Logic = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Logic/index.js"() {
+      init_logic_compare();
+      init_controls_if();
+      init_logic_boolean();
+      init_logic_operation();
+      init_logic_null();
+      init_logic_ternary();
+      init_logic_negate();
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Math/math_change.js
-  var require_math_change = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Math/math_change.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Math/math_change.js
+  var init_math_change = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Math/math_change.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.math_change = {
@@ -16228,9 +16211,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Math/math_constant.js
-  var require_math_constant = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Math/math_constant.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Math/math_constant.js
+  var init_math_constant = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Math/math_constant.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.math_constant = {
@@ -16300,9 +16283,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Math/math_constrain.js
-  var require_math_constrain = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Math/math_constrain.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Math/math_constrain.js
+  var init_math_constrain = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Math/math_constrain.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.math_constrain = {
@@ -16382,9 +16365,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Math/math_modulo.js
-  var require_math_modulo = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Math/math_modulo.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Math/math_modulo.js
+  var init_math_modulo = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Math/math_modulo.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.math_modulo = {
@@ -16452,9 +16435,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Math/math_number.js
-  var require_math_number = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Math/math_number.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Math/math_number.js
+  var init_math_number = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Math/math_number.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.math_number = {
@@ -16507,9 +16490,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Math/math_number_positive.js
-  var require_math_number_positive = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Math/math_number_positive.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Math/math_number_positive.js
+  var init_math_number_positive = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Math/math_number_positive.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.math_number_positive = {
@@ -16537,9 +16520,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Math/math_number_property.js
-  var require_math_number_property = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Math/math_number_property.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Math/math_number_property.js
+  var init_math_number_property = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Math/math_number_property.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.math_number_property = {
@@ -16682,9 +16665,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Math/math_on_list.js
-  var require_math_on_list = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Math/math_on_list.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Math/math_on_list.js
+  var init_math_on_list = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Math/math_on_list.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.math_on_list = {
@@ -17034,9 +17017,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Math/math_random_float.js
-  var require_math_random_float = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Math/math_random_float.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Math/math_random_float.js
+  var init_math_random_float = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Math/math_random_float.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.math_random_float = {
@@ -17072,9 +17055,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Math/math_random_int.js
-  var require_math_random_int = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Math/math_random_int.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Math/math_random_int.js
+  var init_math_random_int = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Math/math_random_int.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.math_random_int = {
@@ -17154,9 +17137,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Math/math_round.js
-  var require_math_round = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Math/math_round.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Math/math_round.js
+  var init_math_round = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Math/math_round.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.math_round = {
@@ -17232,9 +17215,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Math/math_arithmetic.js
-  var require_math_arithmetic = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Math/math_arithmetic.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Math/math_arithmetic.js
+  var init_math_arithmetic = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Math/math_arithmetic.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.math_arithmetic = {
@@ -17318,9 +17301,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Math/math_single.js
-  var require_math_single = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Math/math_single.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Math/math_single.js
+  var init_math_single = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Math/math_single.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.math_single = {
@@ -17441,9 +17424,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Math/math_trig.js
-  var require_math_trig = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Math/math_trig.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Math/math_trig.js
+  var init_math_trig = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Math/math_trig.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.math_trig = {
@@ -17500,29 +17483,29 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Math/index.js
-  var require_Math = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Math/index.js"() {
-      var import_math_change = __toESM(require_math_change());
-      var import_math_constant = __toESM(require_math_constant());
-      var import_math_constrain = __toESM(require_math_constrain());
-      var import_math_modulo = __toESM(require_math_modulo());
-      var import_math_number = __toESM(require_math_number());
-      var import_math_number_positive = __toESM(require_math_number_positive());
-      var import_math_number_property = __toESM(require_math_number_property());
-      var import_math_on_list = __toESM(require_math_on_list());
-      var import_math_random_float = __toESM(require_math_random_float());
-      var import_math_random_int = __toESM(require_math_random_int());
-      var import_math_round = __toESM(require_math_round());
-      var import_math_arithmetic = __toESM(require_math_arithmetic());
-      var import_math_single = __toESM(require_math_single());
-      var import_math_trig = __toESM(require_math_trig());
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Math/index.js
+  var init_Math = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Math/index.js"() {
+      init_math_change();
+      init_math_constant();
+      init_math_constrain();
+      init_math_modulo();
+      init_math_number();
+      init_math_number_positive();
+      init_math_number_property();
+      init_math_on_list();
+      init_math_random_float();
+      init_math_random_int();
+      init_math_round();
+      init_math_arithmetic();
+      init_math_single();
+      init_math_trig();
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Text/text.js
-  var require_text = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Text/text.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Text/text.js
+  var init_text = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Text/text.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.text = {
@@ -17565,9 +17548,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Text/text_join.js
-  var require_text_join = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Text/text_join.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Text/text_join.js
+  var init_text_join = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Text/text_join.js"() {
       init_translations();
       init_utils();
       init_block_images();
@@ -17658,9 +17641,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Text/text_statement.js
-  var require_text_statement = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Text/text_statement.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Text/text_statement.js
+  var init_text_statement = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Text/text_statement.js"() {
       init_translations();
       init_utils();
       init_block_images();
@@ -17742,9 +17725,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Text/text_append.js
-  var require_text_append = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Text/text_append.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Text/text_append.js
+  var init_text_append = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Text/text_append.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.text_append = {
@@ -17816,9 +17799,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Text/text_length.js
-  var require_text_length = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Text/text_length.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Text/text_length.js
+  var init_text_length = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Text/text_length.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.text_length = {
@@ -17872,9 +17855,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Text/text_isEmpty.js
-  var require_text_isEmpty = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Text/text_isEmpty.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Text/text_isEmpty.js
+  var init_text_isEmpty = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Text/text_isEmpty.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.text_isEmpty = {
@@ -17928,9 +17911,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Text/text_indexOf.js
-  var require_text_indexOf = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Text/text_indexOf.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Text/text_indexOf.js
+  var init_text_indexOf = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Text/text_indexOf.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.text_indexOf = {
@@ -18014,9 +17997,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Text/text_charAt.js
-  var require_text_charAt = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Text/text_charAt.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Text/text_charAt.js
+  var init_text_charAt = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Text/text_charAt.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.text_charAt = {
@@ -18130,9 +18113,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Text/text_getSubstring.js
-  var require_text_getSubstring = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Text/text_getSubstring.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Text/text_getSubstring.js
+  var init_text_getSubstring = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Text/text_getSubstring.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.text_getSubstring = {
@@ -18361,9 +18344,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Text/text_changeCase.js
-  var require_text_changeCase = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Text/text_changeCase.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Text/text_changeCase.js
+  var init_text_changeCase = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Text/text_changeCase.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.text_changeCase = {
@@ -18445,9 +18428,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Text/text_trim.js
-  var require_text_trim = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Text/text_trim.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Text/text_trim.js
+  var init_text_trim = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Text/text_trim.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.text_trim = {
@@ -18514,9 +18497,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Text/text_print.js
-  var require_text_print = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Text/text_print.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Text/text_print.js
+  var init_text_print = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Text/text_print.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.text_print = {
@@ -18571,9 +18554,9 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Text/text_prompt_ext.js
-  var require_text_prompt_ext = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Text/text_prompt_ext.js"() {
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Text/text_prompt_ext.js
+  var init_text_prompt_ext = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Text/text_prompt_ext.js"() {
       init_translations();
       init_utils();
       window.Blockly.Blocks.text_prompt_ext = {
@@ -18658,51 +18641,51 @@ ${stack}
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/Text/index.js
-  var require_Text = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/Text/index.js"() {
-      var import_text = __toESM(require_text());
-      var import_text_join = __toESM(require_text_join());
-      var import_text_statement = __toESM(require_text_statement());
-      var import_text_append = __toESM(require_text_append());
-      var import_text_length = __toESM(require_text_length());
-      var import_text_isEmpty = __toESM(require_text_isEmpty());
-      var import_text_indexOf = __toESM(require_text_indexOf());
-      var import_text_charAt = __toESM(require_text_charAt());
-      var import_text_getSubstring = __toESM(require_text_getSubstring());
-      var import_text_changeCase = __toESM(require_text_changeCase());
-      var import_text_trim = __toESM(require_text_trim());
-      var import_text_print = __toESM(require_text_print());
-      var import_text_prompt_ext = __toESM(require_text_prompt_ext());
+  // bot-app/src/external/bot-skeleton/scratch/blocks/Text/index.js
+  var init_Text = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/Text/index.js"() {
+      init_text();
+      init_text_join();
+      init_text_statement();
+      init_text_append();
+      init_text_length();
+      init_text_isEmpty();
+      init_text_indexOf();
+      init_text_charAt();
+      init_text_getSubstring();
+      init_text_changeCase();
+      init_text_trim();
+      init_text_print();
+      init_text_prompt_ext();
     }
   });
 
-  // bot-app/bot-skeleton/scratch/blocks/index.js
-  var require_blocks = __commonJS({
-    "bot-app/bot-skeleton/scratch/blocks/index.js"() {
-      var import_Functions = __toESM(require_Functions());
-      var import_List = __toESM(require_List());
-      var import_Loops = __toESM(require_Loops());
-      var import_Variable = __toESM(require_Variable());
-      var import_After_Purchase = __toESM(require_After_Purchase());
-      var import_Before_Purchase = __toESM(require_Before_Purchase());
-      var import_During_Purchase = __toESM(require_During_Purchase());
-      var import_Indicators = __toESM(require_Indicators());
-      var import_Tick_Analysis = __toESM(require_Tick_Analysis());
-      var import_Candle = __toESM(require_Candle());
-      var import_Misc = __toESM(require_Misc());
-      var import_Time = __toESM(require_Time());
-      var import_Trade_Definition = __toESM(require_Trade_Definition());
-      var import_Logic = __toESM(require_Logic());
-      var import_Math = __toESM(require_Math());
-      var import_Text = __toESM(require_Text());
+  // bot-app/src/external/bot-skeleton/scratch/blocks/index.js
+  var init_blocks = __esm({
+    "bot-app/src/external/bot-skeleton/scratch/blocks/index.js"() {
+      init_Functions();
+      init_List();
+      init_Loops();
+      init_Variable();
+      init_After_Purchase();
+      init_Before_Purchase();
+      init_During_Purchase();
+      init_Indicators();
+      init_Tick_Analysis();
+      init_Candle();
+      init_Misc();
+      init_Time();
+      init_Trade_Definition();
+      init_Logic();
+      init_Math();
+      init_Text();
     }
   });
 
   // bot-shims/blocks-entry.js
   var require_blocks_entry = __commonJS({
     "bot-shims/blocks-entry.js"() {
-      var import_blocks = __toESM(require_blocks());
+      init_blocks();
     }
   });
   return require_blocks_entry();

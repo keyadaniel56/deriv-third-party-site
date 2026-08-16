@@ -10586,7 +10586,7 @@ var BotEngine = (() => {
     }
   }
 
-  // bot-app/bot-skeleton/utils/observer.js
+  // bot-app/src/external/bot-skeleton/utils/observer.js
   var Observer = class {
     constructor() {
       this.eam = new Map2();
@@ -10648,7 +10648,7 @@ var BotEngine = (() => {
   };
   var observer = new Observer();
 
-  // bot-app/bot-skeleton/utils/error.js
+  // bot-app/src/external/bot-skeleton/utils/error.js
   var createError = (name, message) => {
     const e = new Error(message);
     e.name = name;
@@ -10702,7 +10702,7 @@ var BotEngine = (() => {
   // bot-shims/translations.js
   var localize = (s) => typeof s === "string" ? s : "";
 
-  // bot-app/bot-skeleton/constants/config.ts
+  // bot-app/src/external/bot-skeleton/constants/config.ts
   var CRYPTO_CURRENCIES = ["BTC", "ETH", "LTC", "BCH", "UST"];
   var config = () => ({
     lists: {
@@ -11043,7 +11043,7 @@ var BotEngine = (() => {
     }
   });
 
-  // bot-app/bot-skeleton/constants/messages.ts
+  // bot-app/src/external/bot-skeleton/constants/messages.ts
   var unrecoverable_errors = [
     "InsufficientBalance",
     "CustomLimitsReached",
@@ -11066,14 +11066,14 @@ var BotEngine = (() => {
     "PriceMoved"
   ];
 
-  // bot-app/bot-skeleton/constants/save-type.ts
+  // bot-app/src/external/bot-skeleton/constants/save-type.ts
   var save_types = Object.freeze({
     UNSAVED: "unsaved",
     LOCAL: "local",
     GOOGLE_DRIVE: "google drive"
   });
 
-  // bot-app/bot-skeleton/services/tradeEngine/utils/broadcast.js
+  // bot-app/src/external/bot-skeleton/services/tradeEngine/utils/broadcast.js
   var contract = (c) => observer.emit("bot.contract", c);
   var contractStatus = (c) => observer.emit("contract.status", c);
   var info = (i) => observer.emit("bot.info", i);
@@ -11081,7 +11081,7 @@ var BotEngine = (() => {
   var log = (log_type, extra) => observer.emit("ui.log.success", { log_type, extra });
   var error = (message) => observer.emit("ui.log.error", message);
 
-  // bot-app/bot-skeleton/services/tradeEngine/utils/helpers.js
+  // bot-app/src/external/bot-skeleton/services/tradeEngine/utils/helpers.js
   var tradeOptionToProposal = (trade_option, purchase_reference2) => trade_option.contractTypes.map((type) => {
     const proposal = {
       amount: trade_option.amount,
@@ -11358,7 +11358,7 @@ var BotEngine = (() => {
     [WebSocket.CLOSED]: "Closed"
   };
 
-  // bot-app/bot-skeleton/services/tradeEngine/utils/sanitize.js
+  // bot-app/src/external/bot-skeleton/services/tradeEngine/utils/sanitize.js
   var isPositiveNumber = (num) => Number.isFinite(num) && num > 0;
   var isPositiveInteger = (num) => isPositiveNumber(num) && Number.isInteger(num);
   var expectPositiveInteger = (num, msg) => {
@@ -11398,7 +11398,7 @@ var BotEngine = (() => {
     return candles;
   };
 
-  // bot-app/bot-skeleton/services/tradeEngine/trade/state/constants.js
+  // bot-app/src/external/bot-skeleton/services/tradeEngine/trade/state/constants.js
   var BEFORE_PURCHASE = "BEFORE_PURCHASE";
   var DURING_PURCHASE = "DURING_PURCHASE";
   var PROPOSALS_READY = "PROPOSALS_READY";
@@ -11410,7 +11410,7 @@ var BotEngine = (() => {
   var STOP = "STOP";
   var NEW_TICK = "NEW_TICK";
 
-  // bot-app/bot-skeleton/services/tradeEngine/trade/state/actions/index.js
+  // bot-app/src/external/bot-skeleton/services/tradeEngine/trade/state/actions/index.js
   var dispatchIfScopeIs = ({ dispatch, getState, data, scope }) => {
     const { scope: currentScope } = getState();
     if (currentScope === scope) {
@@ -11439,7 +11439,7 @@ var BotEngine = (() => {
   };
   var sell = () => (dispatch, getState) => dispatchIfScopeIs({ dispatch, getState, data: { type: SELL }, scope: DURING_PURCHASE });
 
-  // bot-app/bot-skeleton/services/tradeEngine/trade/state/reducers/index.js
+  // bot-app/src/external/bot-skeleton/services/tradeEngine/trade/state/reducers/index.js
   var initialState = {
     scope: STOP,
     proposalsReady: false
@@ -11502,7 +11502,7 @@ var BotEngine = (() => {
   };
   __publicField(DBotStore, "singleton", null);
 
-  // bot-app/bot-skeleton/services/tradeEngine/trade/Balance.js
+  // bot-app/src/external/bot-skeleton/services/tradeEngine/trade/Balance.js
   var balance_string = "";
   var Balance_default = (Engine) => class Balance extends Engine {
     observeBalance() {
@@ -11527,7 +11527,7 @@ var BotEngine = (() => {
     }
   };
 
-  // bot-app/bot-skeleton/services/tradeEngine/trade/OpenContract.js
+  // bot-app/src/external/bot-skeleton/services/tradeEngine/trade/OpenContract.js
   var OpenContract_default = (Engine) => class OpenContract extends Engine {
     observeOpenContract() {
       if (!api_base.api) return;
@@ -11581,7 +11581,7 @@ var BotEngine = (() => {
     }
   };
 
-  // bot-app/bot-skeleton/services/tradeEngine/trade/Proposal.js
+  // bot-app/src/external/bot-skeleton/services/tradeEngine/trade/Proposal.js
   var Proposal_default = (Engine) => class Proposal extends Engine {
     makeProposals(trade_option) {
       if (!this.isNewTradeOption(trade_option)) {
@@ -11705,7 +11705,7 @@ var BotEngine = (() => {
     }
   };
 
-  // bot-app/bot-skeleton/services/tradeEngine/trade/Purchase.js
+  // bot-app/src/external/bot-skeleton/services/tradeEngine/trade/Purchase.js
   var delayIndex = 0;
   var purchase_reference;
   var Purchase_default = (Engine) => class Purchase extends Engine {
@@ -11803,7 +11803,7 @@ var BotEngine = (() => {
     }
   };
 
-  // bot-app/bot-skeleton/services/tradeEngine/trade/Sell.js
+  // bot-app/src/external/bot-skeleton/services/tradeEngine/trade/Sell.js
   var Sell_default = (Engine) => class Sell extends Engine {
     isSellAtMarketAvailable() {
       return this.contractId && !this.isSold && this.isSellAvailable && !this.isExpired;
@@ -11884,13 +11884,13 @@ var BotEngine = (() => {
     }
   };
 
-  // bot-app/bot-skeleton/services/tradeEngine/trade/Ticks.js
+  // bot-app/src/external/bot-skeleton/services/tradeEngine/trade/Ticks.js
   var import_lodash = __toESM(require_lodash());
 
-  // bot-app/bot-skeleton/utils/binary-utils.ts
+  // bot-app/src/external/bot-skeleton/utils/binary-utils.ts
   var getLast = (arr) => arr && (arr.length === 0 ? void 0 : arr[arr.length - 1]);
 
-  // bot-app/bot-skeleton/services/tradeEngine/trade/Ticks.js
+  // bot-app/src/external/bot-skeleton/services/tradeEngine/trade/Ticks.js
   var tickListenerKey;
   var Ticks_default = (Engine) => class Ticks extends Engine {
     async watchTicks(symbol) {
@@ -12084,7 +12084,7 @@ var BotEngine = (() => {
     }
   };
 
-  // bot-app/bot-skeleton/services/tradeEngine/trade/Total.js
+  // bot-app/src/external/bot-skeleton/services/tradeEngine/trade/Total.js
   var skeleton = {
     totalProfit: 0,
     totalWins: 0,
@@ -12183,7 +12183,7 @@ var BotEngine = (() => {
     }
   };
 
-  // bot-app/bot-skeleton/services/tradeEngine/trade/index.js
+  // bot-app/src/external/bot-skeleton/services/tradeEngine/trade/index.js
   var watchBefore = (store) => watchScope({
     store,
     stopScope: DURING_PURCHASE,
@@ -12299,7 +12299,7 @@ var BotEngine = (() => {
     }
   };
 
-  // bot-app/bot-skeleton/services/tradeEngine/Interface/BotInterface.js
+  // bot-app/src/external/bot-skeleton/services/tradeEngine/Interface/BotInterface.js
   var getBotInterface = (tradeEngine) => {
     const getDetail = (i) => createDetails(tradeEngine.data.contract)[i];
     return {
@@ -12328,7 +12328,7 @@ var BotEngine = (() => {
   };
   var BotInterface_default = getBotInterface;
 
-  // bot-app/bot-skeleton/services/tradeEngine/Interface/TicksInterface.js
+  // bot-app/src/external/bot-skeleton/services/tradeEngine/Interface/TicksInterface.js
   var getTicksInterface = (tradeEngine) => {
     return {
       getDelayTickValue: (...args) => tradeEngine.getDelayTickValue(...args),
@@ -12345,7 +12345,7 @@ var BotEngine = (() => {
   };
   var TicksInterface_default = getTicksInterface;
 
-  // bot-app/bot-skeleton/services/tradeEngine/Interface/CandleInterface.js
+  // bot-app/src/external/bot-skeleton/services/tradeEngine/Interface/CandleInterface.js
   var getCandleInterface = () => {
     return {
       isCandleBlack: (candle) => expectCandle(candle) && candle.close < candle.open,
@@ -12355,7 +12355,7 @@ var BotEngine = (() => {
   };
   var CandleInterface_default = getCandleInterface;
 
-  // bot-app/indicators/utils/math.js
+  // bot-app/src/external/indicators/utils/math.js
   var takeField = (arr, field) => arr.map((x) => field ? x[field] : x);
   var takeLast2 = (arr, n, field) => takeField(arr.slice(n > arr.length ? 0 : arr.length - n, arr.length), field);
   var sum = (data) => data.reduce((acc, x) => acc + x, 0);
@@ -12367,7 +12367,7 @@ var BotEngine = (() => {
     return Math.sqrt(avg_sq_diff);
   };
 
-  // bot-app/indicators/indicators/simple-moving-average.js
+  // bot-app/src/external/indicators/indicators/simple-moving-average.js
   var simpleMovingAverage = (data, config2) => {
     const { periods, field } = config2;
     if (data.length < periods) {
@@ -12383,7 +12383,7 @@ var BotEngine = (() => {
     );
   };
 
-  // bot-app/indicators/indicators/bollinger-bands.js
+  // bot-app/src/external/indicators/indicators/bollinger-bands.js
   var bollingerBands = (data, config2) => {
     const { periods = 20, field, stdDevUp = 2, stdDevDown = 2, pipSize = 2 } = config2;
     const vals = takeLast2(data, periods, field);
@@ -12398,7 +12398,7 @@ var BotEngine = (() => {
     return sequence(data.length - periods + 1).map((x, i) => bollingerBands(data.slice(i, i + periods), config2));
   };
 
-  // bot-app/indicators/indicators/exponential-moving-average.js
+  // bot-app/src/external/indicators/indicators/exponential-moving-average.js
   var exponentialMovingAverage = (data, config2, init_val) => {
     const { periods, field, pipSize = 2 } = config2;
     const weighting_multiplier = 2 / (periods + 1);
@@ -12418,7 +12418,7 @@ var BotEngine = (() => {
     return data.slice(periods - 1).map((x, i) => !i ? init_val : init_val = exponentialMovingAverage([x], config2, init_val));
   };
 
-  // bot-app/indicators/indicators/macd.js
+  // bot-app/src/external/indicators/indicators/macd.js
   var paddingLeft = (data, length) => {
     const arr = [];
     arr.length = length - data.length;
@@ -12456,7 +12456,7 @@ var BotEngine = (() => {
     return macd_calc_array.map((x, i) => [+(x - signal_ema_array[i]).toFixed(pipSize), x, +signal_ema_array[i].toFixed(pipSize)]).slice(slowEmaPeriod + signalEmaPeriod - 2);
   };
 
-  // bot-app/indicators/indicators/relative-strength-index.js
+  // bot-app/src/external/indicators/indicators/relative-strength-index.js
   var calcGain = (q1, q2) => q2 > q1 ? q2 - q1 : 0;
   var calcLoss = (q1, q2) => q2 < q1 ? q1 - q2 : 0;
   var calcFirstAvgDiff = (vals, comp, periods) => {
@@ -12526,7 +12526,7 @@ var BotEngine = (() => {
     );
   };
 
-  // bot-app/bot-skeleton/services/tradeEngine/Interface/IndicatorsInterface.js
+  // bot-app/src/external/bot-skeleton/services/tradeEngine/Interface/IndicatorsInterface.js
   var decorate = (f, input, tradeEngine, config2, ...args) => {
     const pipSize = tradeEngine.getPipSize();
     return f(input, { pipSize, ...config2 }, ...args);
@@ -12546,7 +12546,7 @@ var BotEngine = (() => {
   };
   var IndicatorsInterface_default = getIndicatorsInterface;
 
-  // bot-app/bot-skeleton/services/tradeEngine/Interface/MiscInterface.js
+  // bot-app/src/external/bot-skeleton/services/tradeEngine/Interface/MiscInterface.js
   var getMiscInterface = (tradeEngine) => {
     return {
       notify: (args) => observer.emit("ui.log.notify", args),
@@ -12573,7 +12573,7 @@ var BotEngine = (() => {
   };
   var MiscInterface_default = getMiscInterface;
 
-  // bot-app/bot-skeleton/services/tradeEngine/Interface/ToolsInterface.js
+  // bot-app/src/external/bot-skeleton/services/tradeEngine/Interface/ToolsInterface.js
   var getToolsInterface = (tradeEngine) => {
     return {
       dateTimeStringToTimestamp: (datetime_string) => {
@@ -12626,7 +12626,7 @@ var BotEngine = (() => {
   };
   var ToolsInterface_default = getToolsInterface;
 
-  // bot-app/bot-skeleton/services/tradeEngine/Interface/index.js
+  // bot-app/src/external/bot-skeleton/services/tradeEngine/Interface/index.js
   var sleep = (observer2, arg = 1) => {
     return new Promise(
       (r) => (
@@ -12678,7 +12678,7 @@ var BotEngine = (() => {
     return copy;
   }
 
-  // bot-app/bot-skeleton/services/tradeEngine/utils/interpreter.js
+  // bot-app/src/external/bot-skeleton/services/tradeEngine/utils/interpreter.js
   var import_js_interpreter = __toESM(require_js_interpreter());
 
   // bot-shims/ticks-service-shim.js
@@ -12715,7 +12715,7 @@ var BotEngine = (() => {
     }
   };
 
-  // bot-app/bot-skeleton/services/tradeEngine/utils/cliTools.js
+  // bot-app/src/external/bot-skeleton/services/tradeEngine/utils/cliTools.js
   var createScope = () => {
     const observer2 = new Observer();
     const ticksService = new TicksService();
@@ -12723,7 +12723,7 @@ var BotEngine = (() => {
     return { observer: observer2, ticksService, stopped };
   };
 
-  // bot-app/bot-skeleton/services/tradeEngine/utils/interpreter.js
+  // bot-app/src/external/bot-skeleton/services/tradeEngine/utils/interpreter.js
   import_js_interpreter.default.prototype.takeStateSnapshot = function() {
     const newStateStack = cloneThorough(this.stateStack, void 0, void 0, void 0, true);
     return newStateStack;

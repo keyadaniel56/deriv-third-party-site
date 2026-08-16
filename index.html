@@ -74,10 +74,10 @@
                     <li><a href="#markets">Markets</a></li>
                     <li><a href="#scanner">AI Scanner</a></li>
                     <li><a href="#trade">Trade</a></li>
-                    <li><a href="#bots">Bots</a></li>
                     <li><a href="#faq">FAQ</a></li>
                 </ul>
                 <div class="nav__actions">
+                    <button id="nav-bot-builder" class="btn btn--ghost" type="button">Bot Builder</button>
                     <button id="account-chip" class="account-chip" type="button" hidden>
                         <span class="account-chip__dot"></span>
                         <span id="account-chip-text">Connect</span>
@@ -108,7 +108,7 @@
                     </p>
                     <div class="hero__cta">
                         <a href="#markets" class="btn btn--primary btn--lg">Start Trading</a>
-                        <a href="#bots" class="btn btn--ghost btn--lg">Explore Free Bots</a>
+                        <button id="hero-bot-builder" class="btn btn--ghost btn--lg" type="button">Open Bot Builder</button>
                     </div>
                     <div class="hero__live">
                         <div class="hero__live-label">Live market feed</div>
@@ -324,78 +324,6 @@
                 </div>
             </section>
 
-            <!-- ============ Bots ============ -->
-            <section id="bots" class="section section--alt">
-                <div class="section__head">
-                    <div>
-                        <span class="section__eyebrow">Free Deriv Bots</span>
-                        <h2 class="section__title">Ready-to-run bot strategies</h2>
-                        <p class="section__muted">
-                            Strategy templates you can import into Deriv Bot (DBot) to automate your trading and remove
-                            emotion from the equation.
-                        </p>
-                    </div>
-                </div>
-                <div class="bots-grid">
-                    <article class="bot-card glass">
-                        <div class="bot-card__icon bot-card__icon--blue">V</div>
-                        <h3>Volatility 75 Power</h3>
-                        <p>
-                            A trend-following strategy built for the Volatility 75 Index using Rise/Fall contracts
-                            with adjustable risk.
-                        </p>
-                        <ul class="check-list">
-                            <li>R_75 · Rise/Fall</li>
-                            <li>Configurable stake &amp; max trades</li>
-                            <li>Stop-loss + daily profit target</li>
-                        </ul>
-                        <button class="btn btn--ghost btn--block" type="button" data-bot="vol75">Open in builder</button>
-                    </article>
-                    <article class="bot-card glass">
-                        <div class="bot-card__icon bot-card__icon--green">B</div>
-                        <h3>Volatility 50 Breakout</h3>
-                        <p>
-                            A breakout-style strategy for the Volatility 50 Index, placing Rise/Fall trades on
-                            directional moves after consolidation.
-                        </p>
-                        <ul class="check-list">
-                            <li>R_50 · Rise/Fall</li>
-                            <li>Consolidation detection</li>
-                            <li>Profit target &amp; loss limit</li>
-                        </ul>
-                        <button class="btn btn--ghost btn--block" type="button" data-bot="boom">Open in builder</button>
-                    </article>
-                    <article class="bot-card glass">
-                        <div class="bot-card__icon bot-card__icon--gold">D</div>
-                        <h3>Digit Even/Odd</h3>
-                        <p>
-                            A digit strategy trading the last digit of the tick — Even/Odd and Matches/Differs with
-                            fixed-tick durations.
-                        </p>
-                        <ul class="check-list">
-                            <li>Volatility indices · Digit</li>
-                            <li>Last-digit predictor</li>
-                            <li>1-tick &amp; multi-tick modes</li>
-                        </ul>
-                        <button class="btn btn--ghost btn--block" type="button" data-bot="digit">Open in builder</button>
-                    </article>
-                    <article class="bot-card glass">
-                        <div class="bot-card__icon bot-card__icon--violet">R</div>
-                        <h3>Rise/Fall Runner</h3>
-                        <p>
-                            A simple, repeatable Rise/Fall strategy for the Step Index and low-volatility markets,
-                            ideal for beginners learning automation.
-                        </p>
-                        <ul class="check-list">
-                            <li>1HZ100V · Rise/Fall</li>
-                            <li>Fixed interval trading</li>
-                            <li>Beginner-friendly defaults</li>
-                        </ul>
-                        <button class="btn btn--ghost btn--block" type="button" data-bot="runner">Open in builder</button>
-                    </article>
-                </div>
-            </section>
-
             <!-- ============ Analysis / Features ============ -->
             <section id="analysis" class="section">
                 <div class="section__head">
@@ -526,7 +454,6 @@
                         <li><a href="#markets">Markets</a></li>
                         <li><a href="#scanner">AI Scanner</a></li>
                         <li><a href="#trade">Manual Trader</a></li>
-                        <li><a href="#bots">Bots</a></li>
                     </ul>
                 </div>
                 <div class="site-footer__col">

@@ -1,5 +1,5 @@
 // Simplified TicksService for the trade engine
-import { observer as globalObserver } from '../bot-app/bot-skeleton/utils/observer.js';
+import { observer as globalObserver } from '../bot-app/src/external/bot-skeleton/utils/observer.js';
 
 export default class TicksService {
     constructor() {

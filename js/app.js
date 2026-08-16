@@ -84,11 +84,8 @@
         builderRunLabel: $('#builder-run-label'),
         builderClose: $('#builder-close'),
         builderConn: $('#builder-conn'),
-        builderWorkspace: $('#builder-workspace'),
         builderStatus: $('#builder-status'),
         builderStatusRight: $('#builder-status-right'),
-        paletteSearch: $('#palette-search'),
-        paletteCats: $('#palette-cats'),
         builderMaxTrades: $('#builder-maxtrades'),
         runstateIc: $('#runstate-ic'),
         runstateTitle: $('#runstate-title'),
@@ -103,87 +100,6 @@
 
         toastRoot: $('#toast-root'),
         footerYear: $('#footer-year'),
-    };
-
-    const BOT_CONFIGS = {
-        vol75: {
-            title: 'Volatility 75 Power',
-            summary: 'Trend-following Rise/Fall strategy for the Volatility 75 Index (R_75).',
-            steps: [
-                'Market: Synthetic Indices → Volatility 75 Index (R_75).',
-                'Contract: Rise (CALL) when the last candle closes above its midpoint; Fall (PUT) otherwise.',
-                'Duration: 1 minute, restarting on each completed trade.',
-                'Stake: 10% of total balance, capped at your chosen max stake.',
-                'Risk: stop trading when daily profit target or loss limit is reached.',
-            ],
-            params: [
-                ['Symbol', 'R_75'],
-                ['Contract', 'Rise / Fall'],
-                ['Duration', '1 minute'],
-                ['Stake', '1 USD – 500 USD'],
-                ['Profit target', '10 trades / 15%'],
-                ['Loss limit', '5 consecutive losses'],
-            ],
-            preset: { symbol: 'R_75', contractType: 'CALL', duration: 1, unit: 'm', stake: 10, maxTrades: 10, target: 3, lossLimit: 3 },
-        },
-        boom: {
-            title: 'Boom & Crash Breakout',
-            summary: 'Breakout strategy for Boom 500 (BOOM500) and Crash 500 (CRASH500) using Over/Under contracts.',
-            steps: [
-                'Detect consolidation: no candle moves more than the average range for 5 candles.',
-                'On breakout above range high → trade Over (CALL).',
-                'On breakdown below range low → trade Under (PUT).',
-                'Duration: 5 ticks per contract.',
-                'Trailing stop: close trading after 3 consecutive wins in a session.',
-            ],
-            params: [
-                ['Symbol', 'BOOM500 / CRASH500'],
-                ['Contract', 'Over / Under'],
-                ['Duration', '5 ticks'],
-                ['Stake', '1 USD – 300 USD'],
-                ['Detection', '5-candle range'],
-                ['Session limit', '3 consecutive wins'],
-            ],
-            preset: { symbol: 'R_50', contractType: 'CALL', duration: 1, unit: 'm', stake: 10, maxTrades: 10, target: 3, lossLimit: 3 },
-        },
-        digit: {
-            title: 'Digit Even/Odd',
-            summary: 'Digit strategy trading the last digit of the tick on Volatility indices.',
-            steps: [
-                'Market: Synthetic Indices → Volatility 100 Index (R_100).',
-                'Predict the last digit of the next tick.',
-                'Contract: Even/Odd or Matches/Differs based on your digit analysis.',
-                'Duration: 1 tick.',
-                'Run up to 10 parallel strategies with different digit biases if you want.',
-            ],
-            params: [
-                ['Symbol', 'R_100'],
-                ['Contract', 'Even/Odd, Matches/Differs'],
-                ['Duration', '1 tick'],
-                ['Stake', '0.50 USD – 100 USD'],
-                ['Modes', 'Single & multi-tick'],
-            ],
-            preset: { symbol: 'R_100', contractType: 'DIGITEVEN', duration: 1, unit: 't', stake: 5, maxTrades: 15, target: 5, lossLimit: 3 },
-        },
-        runner: {
-            title: 'Rise/Fall Runner',
-            summary: 'Simple, repeatable Rise/Fall strategy for the Step Index (1HZ100V) — perfect for beginners.',
-            steps: [
-                'Market: Synthetic Indices → Step Index (1HZ100V).',
-                'Contract: Rise (CALL) every completed minute.',
-                'Duration: 1 minute.',
-                'Fixed stake of 1 USD for the first 10 trades to validate the setup.',
-                'Only increase stake after a profitable validation run.',
-            ],
-            params: [
-                ['Symbol', '1HZ100V'],
-                ['Contract', 'Rise / Fall'],
-                ['Duration', '1 minute'],
-                ['Stake', '1 USD default'],
-                ['Validation', '10 trades'],
-            ],
-            preset: { symbol: '1HZ100V', contractType: 'CALL', duration: 1, unit: 'm', stake: 1, maxTrades: 10, target: 3, lossLimit: 3 },
-        },
     };
 
     const state = {
@@ -207,7 +123,6 @@
         account: null,
         symbolsLoaded: false,
         loaderHidden: false,
-        bot: null,
         botRunning: false,
         botStats: { trades: 0, wins: 0, losses: 0, stake: 0, profit: 0 },
         markets: null,
@@ -941,17 +856,7 @@
         if (ok) wsInitialized = true;
     }
 
-    function openBotBuilder(key) {
-        const cfgObj = BOT_CONFIGS[key];
-        if (!cfgObj || !cfgObj.preset) return;
-        state.bot = {
-            key: key,
-            title: cfgObj.title,
-            preset: Object.assign({}, cfgObj.preset),
-        };
-        el.builderWorkspaceName.textContent = cfgObj.title;
-        el.builderMaxTrades.value = cfgObj.preset.maxTrades || 20;
-
+    function openBotBuilder() {
         initBlocklyWorkspace();
         if (window.BotWorkspace) window.BotWorkspace.clear();
 
@@ -959,7 +864,7 @@
             .then(function (r) { return r.text(); })
             .then(function (xml) {
                 if (window.BotWorkspace) window.BotWorkspace.loadXml(xml);
-                botLog('Strategy "' + cfgObj.title + '" loaded into the Blockly workspace.', 'info');
+                botLog('Default strategy loaded into the Blockly workspace.', 'info');
             })
             .catch(function () {
                 botLog('Could not load default strategy XML.', 'warn');
@@ -973,7 +878,6 @@
 
     function resetBotWorkspace() {
         if (state.botRunning) return;
-        state.bot = { key: null, title: 'untitled workspace', preset: null };
         el.builderWorkspaceName.textContent = 'untitled workspace';
         el.builderMaxTrades.value = 20;
         if (el.builderTransactions) el.builderTransactions.innerHTML = '';
@@ -996,7 +900,7 @@
     function saveStrategy() {
         const xml = serializeStrategy();
         if (!xml) { toast('Nothing to save yet.', 'warn'); return; }
-        const name = ((state.bot && state.bot.title || 'untitled workspace').replace(/[^\w -]+/g, '').trim() || 'strategy');
+        const name = (el.builderWorkspaceName.textContent || 'strategy').replace(/[^\w -]+/g, '').trim() || 'strategy';
         const blob = new Blob([xml], { type: 'application/xml' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -1162,72 +1066,6 @@
         }
     }
 
-    function botLog(msg, kind) {
-        if (!el.builderLog) return;
-        const line = document.createElement('div');
-        line.className = 'builder__logline builder__logline--' + (kind || 'info');
-        line.textContent = '[' + new Date().toLocaleTimeString() + '] ' + msg;
-        el.builderLog.appendChild(line);
-        el.builderLog.scrollTop = el.builderLog.scrollHeight;
-    }
-
-    function setBuilderStatus(title, sub) {
-        el.runstateTitle.textContent = title;
-        el.runstateSub.textContent = sub;
-        if (el.builderStatus) el.builderStatus.textContent = title;
-    }
-
-    function updateBuilderConn() {
-        if (!el.builderConn) return;
-        if (state.botRunning) {
-            const n = state.botStats ? state.botStats.trades : 0;
-            el.builderConn.textContent = 'Running — ' + n + ' trade' + (n === 1 ? '' : 's');
-            el.builderConn.className = 'builder__conn builder__conn--run';
-        } else if (state.account) {
-            el.builderConn.textContent = state.account.loginid;
-            el.builderConn.className = 'builder__conn builder__conn--ok';
-        } else {
-            el.builderConn.textContent = 'Not connected';
-            el.builderConn.className = 'builder__conn';
-        }
-        if (el.builderStatusRight) {
-            el.builderStatusRight.textContent = state.account
-                ? 'Balance: ' + fmt(state.account.balance, 2) + ' ' + state.account.currency
-                : '';
-        }
-    }
-
-    function addTransaction(tx) {
-        const row = document.createElement('div');
-        row.className = 'builder__txrow';
-        row.dataset.id = tx.id;
-        row.innerHTML =
-            '<span>' + tx.id + '</span>' +
-            '<span>' + tx.contractId + '</span>' +
-            '<span>' + fmt(tx.stake, 2) + '</span>' +
-            '<span class="pl">…</span>';
-        el.builderTransactions.insertBefore(row, el.builderTransactions.firstChild);
-    }
-
-    function markTransaction(id, pl) {
-        const row = el.builderTransactions.querySelector('[data-id="' + id + '"]');
-        if (!row) return;
-        const cell = row.querySelector('.pl');
-        cell.textContent = (pl >= 0 ? '+' : '') + fmt(pl, 2);
-        cell.classList.add(pl >= 0 ? 'pl--pos' : 'pl--neg');
-    }
-
-    function updateSummary() {
-        const s = state.botStats;
-        el.sumTrades.textContent = s.trades;
-        el.sumStake.textContent = fmt(s.stake, 2);
-        el.sumWins.textContent = s.wins;
-        el.sumLosses.textContent = s.losses;
-        const pf = s.profit;
-        el.sumProfit.textContent = (pf >= 0 ? '+' : '') + fmt(pf, 2);
-        el.sumProfit.style.color = pf >= 0 ? '#0e9f6e' : '#e23b53';
-    }
-
     // wireWorkspaceDrag removed — Blockly handles workspace drag-and-drop natively.
 
     /* =========================================================
@@ -1301,9 +1139,8 @@
 
         el.buyBtn.addEventListener('click', buy);
 
-        $$('[data-bot]').forEach((btn) => {
-            btn.addEventListener('click', () => openBotBuilder(btn.dataset.bot));
-        });
+        $('#nav-bot-builder').addEventListener('click', openBotBuilder);
+        $('#hero-bot-builder').addEventListener('click', openBotBuilder);
 
         el.builderClose.addEventListener('click', closeModals);
         el.builderRun.addEventListener('click', toggleBot);

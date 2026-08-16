@@ -4,7 +4,9 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = __dirname;
-const BOT_APP = path.join(ROOT, 'bot-app', 'bot-skeleton');
+const BOT_APP = path.join(ROOT, 'bot-app', 'src', 'external', 'bot-skeleton');
+const BOT_INDICATORS = path.join(ROOT, 'bot-app', 'src', 'external', 'indicators');
+const BOT_SRC = path.join(ROOT, 'bot-app', 'src');
 
 function makePlugin() {
     return {
@@ -85,9 +87,10 @@ const commonConfig = {
         '@/components/bot-notification/bot-notification-utils': path.join(ROOT, 'bot-shims', 'bot-notification.js'),
         '@/constants/backend-error-messages': path.join(ROOT, 'bot-shims', 'backend-errors.js'),
         '@/utils/clone': path.join(ROOT, 'bot-shims', 'clone.js'),
-        '@': BOT_APP,
+        '@': BOT_SRC,
         '@/external/bot-skeleton': BOT_APP,
-        '@/external': path.join(ROOT, 'bot-app'),
+        '@/external/indicators': BOT_INDICATORS,
+        '@/external': path.join(BOT_SRC, 'external'),
     },
     logLevel: 'warning',
     plugins: [makePlugin()],
