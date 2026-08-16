@@ -74,21 +74,35 @@
         connectStatus: $('#connect-status'),
 
         botBuilder: $('#bot-builder'),
-        builderTitle: $('#builder-title'),
+        builderWorkspaceName: $('#builder-workspace-name'),
+        builderReset: $('#builder-reset'),
         builderRun: $('#builder-run'),
+        builderRunLabel: $('#builder-run-label'),
         builderClose: $('#builder-close'),
         builderConn: $('#builder-conn'),
         builderWorkspace: $('#builder-workspace'),
-        builderMarket: $('#builder-market'),
-        builderType: $('#builder-type'),
-        builderDuration: $('#builder-duration'),
-        builderUnit: $('#builder-unit'),
-        builderStake: $('#builder-stake'),
+        builderStatus: $('#builder-status'),
+        builderStatusRight: $('#builder-status-right'),
+        paletteSearch: $('#palette-search'),
+        paletteCats: $('#palette-cats'),
+        boMarket: $('#bo-market'),
+        boUnderlying: $('#bo-underlying'),
+        boType: $('#bo-type'),
+        boDuration: $('#bo-duration'),
+        boUnit: $('#bo-unit'),
+        boBasis: $('#bo-basis'),
+        boStake: $('#bo-stake'),
         builderMaxTrades: $('#builder-maxtrades'),
-        builderTarget: $('#builder-target'),
-        builderLossLimit: $('#builder-losslimit'),
+        runstateIc: $('#runstate-ic'),
+        runstateTitle: $('#runstate-title'),
+        runstateSub: $('#runstate-sub'),
+        builderTransactions: $('#builder-transactions'),
         builderLog: $('#builder-log'),
-        builderLogStatus: $('#builder-log-status'),
+        sumTrades: $('#sum-trades'),
+        sumStake: $('#sum-stake'),
+        sumWins: $('#sum-wins'),
+        sumLosses: $('#sum-losses'),
+        sumProfit: $('#sum-profit'),
 
         toastRoot: $('#toast-root'),
         footerYear: $('#footer-year'),
@@ -113,7 +127,7 @@
                 ['Profit target', '10 trades / 15%'],
                 ['Loss limit', '5 consecutive losses'],
             ],
-            preset: { symbol: 'R_75', type: 'CALL', duration: 1, unit: 'm', stake: 10, maxTrades: 10, target: 3, lossLimit: 3 },
+            preset: { symbol: 'R_75', contractType: 'CALL', duration: 1, unit: 'm', stake: 10, maxTrades: 10, target: 3, lossLimit: 3 },
         },
         boom: {
             title: 'Boom & Crash Breakout',
@@ -133,7 +147,7 @@
                 ['Detection', '5-candle range'],
                 ['Session limit', '3 consecutive wins'],
             ],
-            preset: { symbol: 'R_50', type: 'CALL', duration: 1, unit: 'm', stake: 10, maxTrades: 10, target: 3, lossLimit: 3 },
+            preset: { symbol: 'R_50', contractType: 'CALL', duration: 1, unit: 'm', stake: 10, maxTrades: 10, target: 3, lossLimit: 3 },
         },
         digit: {
             title: 'Digit Even/Odd',
@@ -152,7 +166,7 @@
                 ['Stake', '0.50 USD – 100 USD'],
                 ['Modes', 'Single & multi-tick'],
             ],
-            preset: { symbol: 'R_100', type: 'DIGITEVEN', duration: 1, unit: 't', stake: 5, maxTrades: 15, target: 5, lossLimit: 3 },
+            preset: { symbol: 'R_100', contractType: 'DIGITEVEN', duration: 1, unit: 't', stake: 5, maxTrades: 15, target: 5, lossLimit: 3 },
         },
         runner: {
             title: 'Rise/Fall Runner',
@@ -171,7 +185,7 @@
                 ['Stake', '1 USD default'],
                 ['Validation', '10 trades'],
             ],
-            preset: { symbol: '1HZ100V', type: 'CALL', duration: 1, unit: 'm', stake: 1, maxTrades: 10, target: 3, lossLimit: 3 },
+            preset: { symbol: '1HZ100V', contractType: 'CALL', duration: 1, unit: 'm', stake: 1, maxTrades: 10, target: 3, lossLimit: 3 },
         },
     };
 
@@ -198,6 +212,8 @@
         loaderHidden: false,
         bot: null,
         botRunning: false,
+        botStats: { trades: 0, wins: 0, losses: 0, stake: 0, profit: 0 },
+        markets: null,
     };
 
     const upColor = cfg('upColor', '#2BB673');
@@ -404,26 +420,42 @@
         state.client
             .getActiveSymbols()
             .then((res) => {
-                const syms = (res.active_symbols || [])
-                    .filter((s) => s.market === 'synthetic_index')
-                    .map((s) => ({
+                const marketName = {
+                    synthetic_index: 'Synthetic Indices',
+                    indices: 'Stock Indices',
+                    forex: 'Forex',
+                    commodities: 'Commodities',
+                    cryptocurrency: 'Cryptocurrencies',
+                };
+                const markets = {};
+                (res.active_symbols || []).forEach((s) => {
+                    const key = s.market || 'other';
+                    if (!markets[key]) markets[key] = { market: key, name: marketName[key] || key, symbols: [] };
+                    markets[key].symbols.push({
                         symbol: s.underlying_symbol || s.symbol,
                         name: s.underlying_symbol_name || s.display_name || s.symbol,
-                    }));
-                syms.sort((a, b) => a.name.localeCompare(b.name));
+                    });
+                });
+                state.markets = Object.keys(markets)
+                    .map((k) => markets[k])
+                    .sort((a, b) => a.name.localeCompare(b.name));
+                state.markets.forEach((m) => m.symbols.sort((a, b) => a.name.localeCompare(b.name)));
+
+                const syms = state.markets.reduce((acc, m) => acc.concat(m.symbols), []);
                 const opts = syms.map((s) => {
                     const opt = document.createElement('option');
                     opt.value = s.symbol;
                     opt.textContent = s.name;
                     return opt;
                 });
-                [el.symbolSelect, el.tradeSymbol, el.builderMarket].forEach((sel) => {
+                [el.symbolSelect, el.tradeSymbol].forEach((sel) => {
                     if (!sel) return;
                     sel.innerHTML = '';
                     opts.forEach((o) => sel.appendChild(o.cloneNode(true)));
                     const matching = sel.querySelector('option[value="' + state.symbol + '"]');
                     if (matching) sel.value = state.symbol;
                 });
+                if (state.bot && state.bot.blocks.indexOf('trade-options') !== -1 && el.boMarket) applyTradeValues();
                 return syms;
             })
             .catch(() => toast('Could not load active symbols from the Deriv API.', 'error'));
@@ -812,6 +844,7 @@
     function handleAuthorize(account) {
         state.account = account;
         renderAccount();
+        updateBuilderConn();
         closeModals();
         toast('Connected as ' + account.loginid, 'success');
         if (account.currency && state.contract.currency !== account.currency) {
@@ -876,76 +909,365 @@
      * ========================================================= */
     function openModal(modal) {
         if (!modal) return;
-        modal.hidden = false;
         document.body.classList.add('modal-open');
         setTimeout(() => modal.classList.add('is-open'), 10);
     }
 
-    function closeModals() {
-        $$('.modal.is-open').forEach((m) => {
-            if (state.botRunning && m === el.botBuilder) stopBot();
-            m.classList.remove('is-open');
-            setTimeout(() => { m.hidden = true; }, 200);
-        });
-        document.body.classList.remove('modal-open');
+    /* =========================================================
+     * Bot builder (DBot-style — mirrors bot.deriv.com)
+     * ========================================================= */
+
+    const BLOCK_CATS = [
+        {
+            cat: 'Start', cls: 'trigger', color: '#6c5ce7', open: true, blocks: [
+                { id: 'once', label: 'Once' },
+                { id: 'every-tick', label: 'Every tick' },
+                { id: 'every-5-ticks', label: 'Every 5 ticks' },
+                { id: 'every-10-ticks', label: 'Every 10 ticks' },
+                { id: 'every-60-ticks', label: 'Every 60 ticks' },
+                { id: 'every-1-minute', label: 'Every 1 minute' },
+                { id: 'every-5-minutes', label: 'Every 5 minutes' },
+            ],
+        },
+        {
+            cat: 'Trade', cls: 'trade', color: '#0e8a68', open: true, blocks: [
+                { id: 'trade-options', label: 'Trade options' },
+                { id: 'buy-contract', label: 'Buy contract' },
+                { id: 'sell-contract', label: 'Sell conditions' },
+                { id: 'sell-at-profit', label: 'Sell at profit' },
+                { id: 'sell-at-loss', label: 'Sell at loss' },
+            ],
+        },
+        {
+            cat: 'Purchase conditions', cls: 'purchase', color: '#0e8a68', open: true, blocks: [
+                { id: 'run-until-win', label: 'Run until a win' },
+                { id: 'run-until-loss', label: 'Run until a loss' },
+                { id: 'smart-purchase', label: 'Smart purchase' },
+            ],
+        },
+        {
+            cat: 'Indicators', cls: 'indicator', color: '#2f6fdb', open: false, blocks: [
+                { id: 'moving-average', label: 'Moving average' },
+                { id: 'bollinger-bands', label: 'Bollinger bands' },
+                { id: 'rsi', label: 'RSI' },
+                { id: 'macd', label: 'MACD' },
+            ],
+        },
+        {
+            cat: 'Logic', cls: 'logic', color: '#d6336c', open: false, blocks: [
+                { id: 'if-else', label: 'If / Else' },
+                { id: 'repeat-while', label: 'Repeat while' },
+            ],
+        },
+        {
+            cat: 'Math', cls: 'math', color: '#c47a10', open: false, blocks: [
+                { id: 'add', label: 'Addition +' },
+                { id: 'subtract', label: 'Subtraction −' },
+                { id: 'multiply', label: 'Multiplication ×' },
+                { id: 'divide', label: 'Division ÷' },
+            ],
+        },
+        {
+            cat: 'Variables', cls: 'variable', color: '#6d46c2', open: false, blocks: [
+                { id: 'create-variable', label: 'Create variable' },
+                { id: 'set-variable', label: 'Set variable' },
+            ],
+        },
+        {
+            cat: 'Statistics', cls: 'stat', color: '#4a4ea9', open: false, blocks: [
+                { id: 'stat-trades', label: 'Total trades' },
+                { id: 'stat-wins', label: 'Total wins' },
+                { id: 'stat-losses', label: 'Total losses' },
+                { id: 'stat-balance', label: 'Balance' },
+            ],
+        },
+    ];
+
+    const TRIGGER_OPTIONS = [
+        ['once', 'Once'],
+        ['every-tick', 'Every tick'],
+        ['every-5-ticks', 'Every 5 ticks'],
+        ['every-10-ticks', 'Every 10 ticks'],
+        ['every-60-ticks', 'Every 60 ticks'],
+        ['every-1-minute', 'Every 1 minute'],
+        ['every-5-minutes', 'Every 5 minutes'],
+    ];
+
+    const CONTRACT_TYPES = [
+        ['CALL', 'Rise'],
+        ['PUT', 'Fall'],
+        ['DIGITEVEN', 'Even'],
+        ['DIGITODD', 'Odd'],
+    ];
+
+    function optStr(pairs) {
+        return pairs.map((p) => '<option value="' + p[0] + '">' + p[1] + '</option>').join('');
     }
 
-    /* =========================================================
-     * Bot builder (DBot-style)
-     * ========================================================= */
-    const BLOCK_DEFS = {
-        'every-tick': { cls: '--trigger', title: 'Every tick', meta: () => 'Start a new trade on every tick until stopped' },
-        'once': { cls: '--trigger', title: 'Once', meta: () => 'Run a single trade then stop' },
-        'trade-options': {
-            cls: '--trade',
-            title: 'Trade options',
-            meta: (s) => s.symbol + ' · ' + s.type + ' · ' + s.duration + (s.unit === 'm' ? 'm' : 't') + ' · stake ' + fmt(s.stake, 2),
-        },
-        'buy-contract': { cls: '--market', title: 'Buy contract', meta: () => 'Purchase the contract at the live ask price' },
-        'if-win': { cls: '--logic', title: 'If win', meta: (s) => 'Stop after ' + (s.target || 0) + ' wins (profit target)' },
-        'if-loss': { cls: '--logic', title: 'If loss', meta: (s) => 'Stop after ' + (s.lossLimit || 0) + ' consecutive losses' },
-        'repeat': { cls: '--logic', title: 'Repeat while balance > target', meta: () => 'Keep trading until a limit is reached' },
-        'pause': { cls: '--danger', title: 'Pause between trades', meta: () => 'Wait 5 seconds between trades' },
-    };
+    function durOpts() {
+        let s = '';
+        for (let i = 1; i <= 30; i++) s += '<option value="' + i + '">' + i + '</option>';
+        return s;
+    }
 
-    function builderFlags(blocks) {
-        return {
-            ifWin: blocks.indexOf('if-win') !== -1,
-            ifLoss: blocks.indexOf('if-loss') !== -1,
-            pause: blocks.indexOf('pause') !== -1,
-        };
+    function paletteBlock(type) {
+        for (let i = 0; i < BLOCK_CATS.length; i++) {
+            const b = BLOCK_CATS[i].blocks.find((x) => x.id === type);
+            if (b) return { def: b, cat: BLOCK_CATS[i] };
+        }
+        return null;
+    }
+
+    function renderPalette(query) {
+        const q = (query || '').toLowerCase();
+        el.paletteCats.innerHTML = '';
+        BLOCK_CATS.forEach((cat) => {
+            const blocks = cat.blocks.filter(
+                (b) => !q || b.label.toLowerCase().indexOf(q) !== -1 || cat.cat.toLowerCase().indexOf(q) !== -1
+            );
+            if (q && !blocks.length) return;
+            const open = !q && cat.open;
+            const catBtn = document.createElement('button');
+            catBtn.type = 'button';
+            catBtn.className = 'bb-cat' + (open ? ' is-open' : '');
+            catBtn.innerHTML =
+                '<span class="bb-cat__dot" style="background:' + cat.color + '"></span>' +
+                cat.cat +
+                '<span class="bb-cat__caret">&#9654;</span>';
+            catBtn.addEventListener('click', () => catBtn.classList.toggle('is-open'));
+            const wrap = document.createElement('div');
+            wrap.className = 'bb-cat__blocks';
+            blocks.forEach((b) => {
+                const item = document.createElement('button');
+                item.type = 'button';
+                item.className = 'bb-palette';
+                item.dataset.block = b.id;
+                item.innerHTML =
+                    '<span class="bb-palette__chip" style="background:' + cat.color + '"></span>' + b.label;
+                item.title = 'Add "' + b.label + '" block to the workspace';
+                item.addEventListener('click', () => addBuilderBlock(b.id));
+                wrap.appendChild(item);
+            });
+            el.paletteCats.appendChild(catBtn);
+            el.paletteCats.appendChild(wrap);
+        });
+    }
+
+    function buildDecorativeBody(type) {
+        const ipt = (w, v) => '<input class="bb-inp" type="number" value="' + v + '" style="width:' + w + 'px" />';
+        switch (type) {
+            case 'moving-average':
+                return '<div class="bb-block__field"><span>period</span>' + ipt(56, 14) + '</div>';
+            case 'bollinger-bands':
+                return '<div class="bb-block__field"><span>period</span>' + ipt(56, 20) + '<span>std</span>' + ipt(52, 2) + '</div>';
+            case 'rsi':
+                return '<div class="bb-block__field"><span>period</span>' + ipt(56, 14) + '</div>';
+            case 'macd':
+                return '<div class="bb-block__field"><span>fast</span>' + ipt(48, 12) + '<span>slow</span>' + ipt(48, 26) + '</div>';
+            case 'if-else':
+                return '<div class="bb-block__field"><input class="bb-inp" style="width:64px" /><span>then</span><input class="bb-inp" style="width:64px" /></div>';
+            case 'repeat-while':
+                return '<div class="bb-block__field"><input class="bb-inp" style="width:64px" /></div>';
+            case 'add':
+                return '<div class="bb-block__field"><input class="bb-inp" style="width:52px" /><span>+</span><input class="bb-inp" style="width:52px" /></div>';
+            case 'subtract':
+                return '<div class="bb-block__field"><input class="bb-inp" style="width:52px" /><span>−</span><input class="bb-inp" style="width:52px" /></div>';
+            case 'multiply':
+                return '<div class="bb-block__field"><input class="bb-inp" style="width:52px" /><span>×</span><input class="bb-inp" style="width:52px" /></div>';
+            case 'divide':
+                return '<div class="bb-block__field"><input class="bb-inp" style="width:52px" /><span>÷</span><input class="bb-inp" style="width:52px" /></div>';
+            case 'create-variable':
+                return '<div class="bb-block__field"><input class="bb-inp" placeholder="name" style="width:90px" /></div>';
+            case 'set-variable':
+                return '<div class="bb-block__field"><input class="bb-inp" placeholder="name" style="width:80px" /><span>=</span><input class="bb-inp" style="width:60px" /></div>';
+            default:
+                return '<div class="bb-block__field"><span>—</span></div>';
+        }
+    }
+
+    function buildBlock(type) {
+        const d = document.createElement('div');
+        d.className = 'bb-block';
+        d.draggable = true;
+        d.dataset.type = type;
+        const del = document.createElement('button');
+        del.type = 'button';
+        del.className = 'bb-block__del';
+        del.textContent = '\u00d7';
+        del.title = 'Remove block';
+        del.addEventListener('click', (e) => {
+            e.stopPropagation();
+            removeBuilderBlock(type);
+        });
+        d.appendChild(del);
+
+        if (type === 'trade-options') {
+            d.classList.add('bb-block--trade');
+            d.innerHTML =
+                '<div class="bb-block__title">Trade options</div>' +
+                '<div class="bb-block__field"><span>Market</span><select id="bo-market" class="bb-inp"></select></div>' +
+                '<div class="bb-block__field"><span>Underlying</span><select id="bo-underlying" class="bb-inp"></select></div>' +
+                '<div class="bb-block__field"><span>Trade type</span><select id="bo-type" class="bb-inp">' + optStr(CONTRACT_TYPES) + '</select></div>' +
+                '<div class="bb-block__field"><span>Duration</span><span class="bb-inp-group"><select id="bo-duration" class="bb-inp">' + durOpts() + '</select><select id="bo-unit" class="bb-inp"><option value="t">ticks</option><option value="m">minutes</option></select></span></div>' +
+                '<div class="bb-block__field"><span>Payout</span><select id="bo-basis" class="bb-inp"><option value="stake">Stake</option><option value="payout">Payout</option></select><input id="bo-stake" class="bb-inp" type="number" min="0.5" step="0.5" value="10" style="width:84px" /></div>';
+        } else if (TRIGGER_OPTIONS.some((t) => t[0] === type)) {
+            d.classList.add('bb-block--trigger');
+            const sel = document.createElement('select');
+            sel.className = 'bb-inp';
+            sel.innerHTML = TRIGGER_OPTIONS.map(
+                (t) => '<option value="' + t[0] + '"' + (t[0] === type ? ' selected' : '') + '>' + t[1] + '</option>'
+            ).join('');
+            sel.addEventListener('change', () => {
+                const idx = state.bot.blocks.indexOf(type);
+                if (idx !== -1) state.bot.blocks[idx] = sel.value;
+                renderWorkspace();
+            });
+            const row = document.createElement('div');
+            row.className = 'bb-block__field';
+            row.appendChild(sel);
+            d.appendChild(row);
+        } else if (type === 'buy-contract') {
+            d.classList.add('bb-block--buy');
+            d.innerHTML =
+                '<div class="bb-block__title">Buy contract</div>' +
+                '<div class="bb-block__field"><span>Buy</span><select class="bb-inp"><option>trade options</option></select></div>';
+        } else if (type === 'sell-contract') {
+            d.classList.add('bb-block--sell');
+            d.innerHTML =
+                '<div class="bb-block__title">Sell conditions</div>' +
+                '<div class="bb-block__field"><select class="bb-inp"><option>Do nothing</option><option>Sell at profit</option><option>Sell at loss</option></select></div>';
+        } else if (type === 'sell-at-profit' || type === 'sell-at-loss') {
+            d.classList.add('bb-block--sell');
+            d.innerHTML =
+                '<div class="bb-block__title">Sell conditions</div>' +
+                '<div class="bb-block__field"><span>' + (type === 'sell-at-profit' ? 'Sell at profit' : 'Sell at loss') + '</span>' +
+                '<input class="bb-inp" type="number" min="0" step="5" value="' + (type === 'sell-at-profit' ? '50' : '25') + '" style="width:56px" /><span>%</span></div>';
+        } else if (type === 'run-until-win' || type === 'run-until-loss' || type === 'smart-purchase') {
+            d.classList.add('bb-block--purchase');
+            d.innerHTML =
+                '<div class="bb-block__title">Purchase conditions</div>' +
+                '<div class="bb-block__field"><select class="bb-inp">' +
+                '<option' + (type === 'run-until-win' ? ' selected' : '') + '>Run until a win</option>' +
+                '<option' + (type === 'run-until-loss' ? ' selected' : '') + '>Run until a loss</option>' +
+                '<option' + (type === 'smart-purchase' ? ' selected' : '') + '>Smart purchase</option>' +
+                '</select></div>';
+        } else {
+            const pb = paletteBlock(type);
+            if (pb) d.classList.add('bb-block--' + pb.cat.cls);
+            d.innerHTML =
+                '<div class="bb-block__title">' + (pb ? pb.def.label : type) + '</div>' +
+                buildDecorativeBody(type);
+        }
+        return d;
+    }
+
+    function populateUnderlying() {
+        if (!el.boMarket || !el.boUnderlying || !state.markets) return;
+        const m = state.markets.find((x) => x.market === el.boMarket.value);
+        if (!m) return;
+        const prev = el.boUnderlying.value;
+        el.boUnderlying.innerHTML = '';
+        m.symbols.forEach((s) => {
+            const o = document.createElement('option');
+            o.value = s.symbol;
+            o.textContent = s.name;
+            el.boUnderlying.appendChild(o);
+        });
+        if (prev && m.symbols.some((s) => s.symbol === prev)) el.boUnderlying.value = prev;
+    }
+
+    function setUnderlying(symbol) {
+        if (!state.markets || !el.boMarket) return;
+        for (const m of state.markets) {
+            if (m.symbols.some((s) => s.symbol === symbol)) {
+                el.boMarket.value = m.market;
+                populateUnderlying();
+                if (el.boUnderlying) el.boUnderlying.value = symbol;
+                return;
+            }
+        }
+        el.boMarket.value = state.markets[0].market;
+        populateUnderlying();
+    }
+
+    function applyTradeValues() {
+        if (!el.boMarket || !state.markets) return;
+        if (!el.boMarket.options.length) {
+            el.boMarket.innerHTML = '';
+            state.markets.forEach((m) => {
+                const o = document.createElement('option');
+                o.value = m.market;
+                o.textContent = m.name;
+                el.boMarket.appendChild(o);
+            });
+        }
+        el.boMarket.addEventListener('change', populateUnderlying);
+        const pre = (state.bot && state.bot.pre) || {};
+        if (pre.symbol) setUnderlying(pre.symbol);
+        if (pre.contractType) el.boType.value = pre.contractType;
+        if (pre.duration) el.boDuration.value = String(pre.duration);
+        if (pre.unit) el.boUnit.value = pre.unit;
+        if (pre.basis) el.boBasis.value = pre.basis;
+        if (pre.stake) el.boStake.value = pre.stake;
+    }
+
+    function renderWorkspace() {
+        const ws = el.builderWorkspace;
+        if (!state.bot || !state.bot.blocks.length) {
+            ws.innerHTML = '<div class="ws__empty">Click blocks from the left panel to build your bot.</div>';
+            return;
+        }
+        ws.innerHTML = '';
+        state.bot.blocks.forEach((type, i) => {
+            const node = buildBlock(type);
+            if (node) ws.appendChild(node);
+            if (i < state.bot.blocks.length - 1) {
+                const conn = document.createElement('div');
+                conn.className = 'bb-connect';
+                ws.appendChild(conn);
+            }
+        });
+        rebindTradeOptions();
+        applyTradeValues();
+    }
+
+    function rebindTradeOptions() {
+        el.boMarket = $('#bo-market');
+        el.boUnderlying = $('#bo-underlying');
+        el.boType = $('#bo-type');
+        el.boDuration = $('#bo-duration');
+        el.boUnit = $('#bo-unit');
+        el.boBasis = $('#bo-basis');
+        el.boStake = $('#bo-stake');
     }
 
     function openBotBuilder(key) {
         const cfgObj = BOT_CONFIGS[key];
         if (!cfgObj || !cfgObj.preset) return;
-        const pre = cfgObj.preset;
         state.bot = {
             key: key,
             title: cfgObj.title,
-            blocks: ['every-tick', 'trade-options', 'buy-contract', 'if-loss'],
+            pre: Object.assign({}, cfgObj.preset),
+            blocks: ['every-tick', 'trade-options', 'smart-purchase', 'sell-contract'],
         };
-        el.builderTitle.textContent = cfgObj.title;
-        el.builderMarket.value = pre.symbol;
-        el.builderType.value = pre.type;
-        el.builderDuration.value = pre.duration;
-        el.builderUnit.value = pre.unit;
-        el.builderStake.value = pre.stake;
-        el.builderMaxTrades.value = pre.maxTrades;
-        el.builderTarget.value = pre.target;
-        el.builderLossLimit.value = pre.lossLimit;
+        el.builderWorkspaceName.textContent = cfgObj.title;
+        el.builderMaxTrades.value = cfgObj.preset.maxTrades || 20;
         renderWorkspace();
         botLog('Strategy "' + cfgObj.title + '" loaded into the builder.', 'info');
         updateBuilderConn();
+        setBuilderStatus('Bot ready to run', 'Start the bot to begin automated trading.');
         openModal(el.botBuilder);
     }
 
     function addBuilderBlock(type) {
         if (!state.bot) return;
-        if (type === 'every-tick' || type === 'once') {
-            state.bot.blocks = state.bot.blocks.filter((b) => b !== 'every-tick' && b !== 'once');
+        if (type === 'trade-options') {
+            state.bot.blocks = state.bot.blocks.filter((b) => b !== 'trade-options');
         }
-        if (state.bot.blocks.length >= 8) {
+        if (TRIGGER_OPTIONS.some((t) => t[0] === type)) {
+            state.bot.blocks = state.bot.blocks.filter((b) => !TRIGGER_OPTIONS.some((t) => t[0] === b));
+        }
+        if (state.bot.blocks.length >= 12) {
             toast('Workspace is full — remove a block first.', 'warn');
             return;
         }
@@ -953,48 +1275,105 @@
         renderWorkspace();
     }
 
-    function removeBuilderBlock(i) {
+    function removeBuilderBlock(type) {
         if (!state.bot) return;
-        state.bot.blocks.splice(i, 1);
+        state.bot.blocks = state.bot.blocks.filter((b) => b !== type);
         renderWorkspace();
     }
 
-    function renderWorkspace() {
-        const ws = el.builderWorkspace;
-        if (!state.bot || !state.bot.blocks.length) {
-            ws.innerHTML = '<p class="ws__empty">Add blocks from the left panel to build your strategy.</p>';
-            return;
-        }
-        const settings = readBotSettings();
-        ws.innerHTML = '';
-        state.bot.blocks.forEach((type, i) => {
-            const def = BLOCK_DEFS[type];
-            if (!def) return;
-            const block = document.createElement('div');
-            block.className = 'ws__block ws__block' + def.cls;
-            block.innerHTML =
-                '<div class="ws__block-title">' + def.title + '</div>' +
-                '<div class="ws__block-meta">' + def.meta(settings) + '</div>' +
-                '<button type="button" class="ws__block-del" data-i="' + i + '" aria-label="Remove block">&times;</button>';
-            ws.appendChild(block);
-            if (i < state.bot.blocks.length - 1) {
-                const conn = document.createElement('div');
-                conn.className = 'ws__connector';
-                ws.appendChild(conn);
-            }
+    function resetBotWorkspace() {
+        if (state.botRunning) return;
+        state.bot = {
+            key: null,
+            title: 'untitled workspace',
+            pre: null,
+            blocks: ['every-tick', 'trade-options', 'smart-purchase', 'sell-contract'],
+        };
+        el.builderWorkspaceName.textContent = 'untitled workspace';
+        el.builderMaxTrades.value = 20;
+        if (el.builderTransactions) el.builderTransactions.innerHTML = '';
+        if (el.builderLog) el.builderLog.innerHTML = '';
+        renderWorkspace();
+        botLog('Workspace reset to the default strategy.', 'info');
+    }
+
+    function switchBuilderTab(tab) {
+        $$('#bot-builder .builder__tabs [data-tab]').forEach((t) => {
+            t.classList.toggle('is-active', t.dataset.tab === tab);
+        });
+        $$('#bot-builder .builder__tab').forEach((p) => {
+            p.classList.toggle('is-active', p.id === 'tab-' + tab);
         });
     }
 
+    function wireWorkspaceDrag() {
+        let dragType = null;
+        el.builderWorkspace.addEventListener('dragstart', (e) => {
+            const block = e.target.closest('.bb-block');
+            if (!block) return;
+            dragType = block.dataset.type;
+            e.dataTransfer.effectAllowed = 'move';
+        });
+        el.builderWorkspace.addEventListener('dragover', (e) => {
+            if (dragType) e.preventDefault();
+        });
+        el.builderWorkspace.addEventListener('drop', (e) => {
+            e.preventDefault();
+            if (!dragType) return;
+            const target = e.target.closest('.bb-block');
+            const blocks = state.bot.blocks.slice();
+            const from = blocks.indexOf(dragType);
+            if (from === -1) return;
+            const to = target && target.dataset.type ? blocks.indexOf(target.dataset.type) : blocks.length - 1;
+            if (to === -1) return;
+            blocks.splice(from, 1);
+            blocks.splice(to, 0, dragType);
+            state.bot.blocks = blocks;
+            dragType = null;
+            renderWorkspace();
+        });
+        el.builderWorkspace.addEventListener('dragend', () => {
+            dragType = null;
+        });
+    }
+
+    function triggerInterval(trigger) {
+        switch (trigger) {
+            case 'every-5-ticks': return 10000;
+            case 'every-10-ticks': return 20000;
+            case 'every-60-ticks': return 120000;
+            case 'every-1-minute': return 60000;
+            case 'every-5-minutes': return 300000;
+            default: return 0; /* once / every tick: trade as soon as the previous settles */
+        }
+    }
+
+    function triggerLabel(trigger) {
+        const t = TRIGGER_OPTIONS.find((x) => x[0] === trigger);
+        return t ? t[1] : trigger;
+    }
+
+    function contractLabel(ct) {
+        const c = CONTRACT_TYPES.find((x) => x[0] === ct);
+        return c ? c[1] : ct;
+    }
+
     function readBotSettings() {
+        const trigger = state.bot.blocks.find((b) => TRIGGER_OPTIONS.some((t) => t[0] === b)) || 'every-tick';
+        const hasTrade = state.bot.blocks.indexOf('trade-options') !== -1;
         return {
-            symbol: el.builderMarket.value,
-            type: el.builderType.value,
-            duration: Math.max(1, Number(el.builderDuration.value) || 1),
-            unit: el.builderUnit.value,
-            stake: Math.max(0.5, Number(el.builderStake.value) || 1),
+            trigger: trigger,
+            intervalMs: triggerInterval(trigger),
+            once: trigger === 'once',
+            symbol: hasTrade && el.boUnderlying ? el.boUnderlying.value : 'R_100',
+            contractType: hasTrade && el.boType ? el.boType.value : 'CALL',
+            duration: hasTrade && el.boDuration ? (Number(el.boDuration.value) || 1) : 1,
+            unit: hasTrade && el.boUnit ? el.boUnit.value : 'm',
+            basis: hasTrade && el.boBasis ? el.boBasis.value : 'stake',
+            stake: hasTrade && el.boStake ? (Number(el.boStake.value) || 1) : 1,
             maxTrades: Math.max(1, Number(el.builderMaxTrades.value) || 1),
-            target: Math.max(0, Number(el.builderTarget.value) || 0),
-            lossLimit: Math.max(0, Number(el.builderLossLimit.value) || 0),
+            runUntilWin: state.bot.blocks.indexOf('run-until-win') !== -1,
+            runUntilLoss: state.bot.blocks.indexOf('run-until-loss') !== -1,
             currency: (state.account && state.account.currency) || 'USD',
         };
     }
@@ -1002,8 +1381,8 @@
     function botProposalParams(settings) {
         return {
             amount: Number(settings.stake) || 1,
-            basis: 'stake',
-            contract_type: settings.type,
+            basis: settings.basis || 'stake',
+            contract_type: settings.contractType,
             currency: settings.currency,
             duration: Number(settings.duration) || 1,
             duration_unit: settings.unit,
@@ -1020,6 +1399,12 @@
         el.builderLog.scrollTop = el.builderLog.scrollHeight;
     }
 
+    function setBuilderStatus(title, sub) {
+        el.runstateTitle.textContent = title;
+        el.runstateSub.textContent = sub;
+        if (el.builderStatus) el.builderStatus.textContent = title;
+    }
+
     function updateBuilderConn() {
         if (!el.builderConn) return;
         if (state.botRunning) {
@@ -1027,12 +1412,48 @@
             el.builderConn.textContent = 'Running — ' + n + ' trade' + (n === 1 ? '' : 's');
             el.builderConn.className = 'builder__conn builder__conn--run';
         } else if (state.account) {
-            el.builderConn.textContent = 'Connected · ' + state.account.loginid;
+            el.builderConn.textContent = state.account.loginid;
             el.builderConn.className = 'builder__conn builder__conn--ok';
         } else {
             el.builderConn.textContent = 'Not connected';
             el.builderConn.className = 'builder__conn';
         }
+        if (el.builderStatusRight) {
+            el.builderStatusRight.textContent = state.account
+                ? 'Balance: ' + fmt(state.account.balance, 2) + ' ' + state.account.currency
+                : '';
+        }
+    }
+
+    function addTransaction(tx) {
+        const row = document.createElement('div');
+        row.className = 'builder__txrow';
+        row.dataset.id = tx.id;
+        row.innerHTML =
+            '<span>' + tx.id + '</span>' +
+            '<span>' + tx.contractId + '</span>' +
+            '<span>' + fmt(tx.stake, 2) + '</span>' +
+            '<span class="pl">…</span>';
+        el.builderTransactions.insertBefore(row, el.builderTransactions.firstChild);
+    }
+
+    function markTransaction(id, pl) {
+        const row = el.builderTransactions.querySelector('[data-id="' + id + '"]');
+        if (!row) return;
+        const cell = row.querySelector('.pl');
+        cell.textContent = (pl >= 0 ? '+' : '') + fmt(pl, 2);
+        cell.classList.add(pl >= 0 ? 'pl--pos' : 'pl--neg');
+    }
+
+    function updateSummary() {
+        const s = state.botStats;
+        el.sumTrades.textContent = s.trades;
+        el.sumStake.textContent = fmt(s.stake, 2);
+        el.sumWins.textContent = s.wins;
+        el.sumLosses.textContent = s.losses;
+        const pf = s.profit;
+        el.sumProfit.textContent = (pf >= 0 ? '+' : '') + fmt(pf, 2);
+        el.sumProfit.style.color = pf >= 0 ? '#0e9f6e' : '#e23b53';
     }
 
     function toggleBot() {
@@ -1052,40 +1473,45 @@
             toast('Connect your Deriv account to run the bot.', 'error');
             return;
         }
-        const settings = readBotSettings();
-        if (!settings.symbol) {
-            toast('Choose a market first.', 'error');
+        if (state.bot.blocks.indexOf('trade-options') === -1) {
+            toast('Add the Trade options block to your workspace first.', 'error');
             return;
         }
+        const settings = readBotSettings();
         if (/^(BOOM|CRASH)/i.test(settings.symbol)) {
-            botLog('Note: Boom/Crash indices only offer Multipliers and Accumulators in the new Deriv API — Rise/Fall/Digit contracts are not available on them. Pick a Volatility index (e.g. R_50/R_75).', 'warn');
-            state.botRunning = false;
+            botLog('Boom/Crash indices only offer Multipliers and Accumulators on the new Deriv API — pick a Volatility index (R_25 … R_100) instead.', 'warn');
+            setBuilderStatus('Waiting', 'Pick a supported market.');
             return;
         }
         state.botRunning = true;
-        state.botStats = { trades: 0, wins: 0, losses: 0, streak: 0 };
-        el.builderRun.textContent = 'Stop';
-        el.builderRun.classList.add('btn--danger');
+        state.botStats = { trades: 0, wins: 0, losses: 0, stake: 0, profit: 0 };
+        el.builderRun.classList.add('is-running');
+        el.builderRunLabel.textContent = 'Stop';
+        el.runstateIc.textContent = '\u23F8';
+        el.runstateIc.parentElement.classList.add('is-running');
+        el.runstateTitle.textContent = 'Running';
+        el.runstateSub.textContent = settings.once
+            ? 'Running a single trade.'
+            : 'Trading every ' + triggerLabel(settings.trigger) + '.';
         botLog(
-            'Bot started on ' + settings.symbol + ' · ' + settings.type +
+            'Bot started on ' + settings.symbol + ' · ' + contractLabel(settings.contractType) +
             ' · ' + settings.duration + (settings.unit === 'm' ? 'm' : 't') +
             ' · stake ' + fmt(settings.stake, 2) + ' ' + settings.currency,
             'ok'
         );
 
-        const flags = builderFlags(state.bot.blocks);
         while (state.botRunning) {
             const s = state.botStats;
             if (s.trades >= settings.maxTrades) {
-                botLog('Max trades reached (' + settings.maxTrades + '). Stopping.', 'warn');
+                botLog('Stopped after ' + s.trades + ' trades (limit reached).', 'warn');
                 break;
             }
-            if (flags.ifWin && settings.target > 0 && s.wins >= settings.target) {
-                botLog('Profit target reached (' + s.wins + ' wins). Stopping.', 'ok');
+            if (settings.runUntilWin && s.wins >= 1) {
+                botLog('Run-until-a-win condition met — stopping.', 'ok');
                 break;
             }
-            if (flags.ifLoss && settings.lossLimit > 0 && s.streak >= settings.lossLimit) {
-                botLog('Loss limit reached (' + s.streak + ' consecutive losses). Stopping.', 'warn');
+            if (settings.runUntilLoss && s.losses >= 1) {
+                botLog('Run-until-a-loss condition met — stopping.', 'warn');
                 break;
             }
 
@@ -1111,9 +1537,11 @@
                 break;
             }
             if (!state.botRunning) break;
-            s.trades += 1;
             const b = receipt.buy;
-            const currency = (state.account && state.account.currency) || settings.currency;
+            s.trades += 1;
+            s.stake += b.buy_price;
+            const currency = settings.currency;
+            addTransaction({ id: s.trades, contractId: b.contract_id, stake: b.buy_price });
             botLog(
                 '#' + s.trades + ' bought contract ' + b.contract_id +
                 ' for ' + fmt(b.buy_price, 2) + ' ' + currency +
@@ -1126,31 +1554,49 @@
             if (!state.botRunning) break;
             if (result.profit >= 0.005) {
                 s.wins += 1;
-                s.streak = 0;
+                s.profit += result.profit;
                 botLog('#' + s.trades + ' WIN +' + fmt(result.profit, 2) + ' ' + currency, 'ok');
+                markTransaction(s.trades, result.profit);
             } else {
                 s.losses += 1;
-                s.streak += 1;
-                botLog('#' + s.trades + ' loss (' + fmt(result.profit, 2) + ' ' + currency + ')', 'err');
+                s.profit -= b.buy_price;
+                botLog('#' + s.trades + ' loss — stake ' + fmt(b.buy_price, 2) + ' ' + currency, 'err');
+                markTransaction(s.trades, -b.buy_price);
             }
+            updateSummary();
             updateBuilderConn();
 
-            if (flags.pause) {
-                botLog('Pausing 5s before the next trade…', 'info');
-                await sleep(5000);
+            if (settings.once) {
+                botLog('Once trigger — stopping after the first trade.', 'info');
+                break;
+            }
+            const iv = settings.intervalMs;
+            if (iv > 0) {
+                const elapsed = result.settledAt ? Date.now() - result.settledAt : iv;
+                const wait = Math.max(0, iv - elapsed);
+                if (wait > 0) {
+                    botLog('Waiting ' + Math.round(wait / 1000) + 's until the next trade…', 'info');
+                    await sleep(wait);
+                }
             }
         }
 
         state.botRunning = false;
-        el.builderRun.textContent = 'Run';
-        el.builderRun.classList.remove('btn--danger');
+        el.builderRun.classList.remove('is-running');
+        el.builderRunLabel.textContent = 'Run';
+        el.runstateIc.textContent = '\u25B6';
+        el.runstateIc.parentElement.classList.remove('is-running');
+        el.runstateTitle.textContent = 'Bot stopped';
+        el.runstateSub.textContent = 'Review the Transactions and Summary tabs.';
         botLog(
             'Bot stopped — ' + state.botStats.trades + ' trade' + (state.botStats.trades === 1 ? '' : 's') +
             ', ' + state.botStats.wins + ' win' + (state.botStats.wins === 1 ? '' : 's') +
             ', ' + state.botStats.losses + ' loss' + (state.botStats.losses === 1 ? '' : 'es') + '.',
             'info'
         );
+        updateSummary();
         updateBuilderConn();
+        setBuilderStatus('Bot stopped', 'Run finished.');
     }
 
     async function waitSettlement(balanceAfterBuy, settings) {
@@ -1158,6 +1604,7 @@
         const maxWait = Math.max(12000, settings.duration * unitMs + 30000);
         const started = Date.now();
         let profit = 0;
+        let settledAt = 0;
         while (state.botRunning && Date.now() - started < maxWait) {
             await sleep(2500);
             let bal;
@@ -1169,10 +1616,11 @@
             const cur = bal && bal.balance ? bal.balance.balance : null;
             if (cur !== null && Math.abs(cur - balanceAfterBuy) > 0.001) {
                 profit = cur - balanceAfterBuy;
+                settledAt = Date.now();
                 break;
             }
         }
-        return { profit: profit };
+        return { profit: profit, settledAt: settledAt };
     }
 
     /* =========================================================
@@ -1251,20 +1699,12 @@
 
         el.builderClose.addEventListener('click', closeModals);
         el.builderRun.addEventListener('click', toggleBot);
-        $$('#bot-builder [data-block]').forEach((b) => {
-            b.addEventListener('click', () => addBuilderBlock(b.dataset.block));
+        el.builderReset.addEventListener('click', resetBotWorkspace);
+        el.paletteSearch.addEventListener('input', () => renderPalette(el.paletteSearch.value));
+        $$('#bot-builder [data-tab]').forEach((tab) => {
+            tab.addEventListener('click', () => switchBuilderTab(tab.dataset.tab));
         });
-        el.builderWorkspace.addEventListener('click', (e) => {
-            const del = e.target.closest('.ws__block-del');
-            if (del) removeBuilderBlock(Number(del.dataset.i));
-        });
-        [
-            el.builderMarket, el.builderType, el.builderDuration,
-            el.builderUnit, el.builderStake, el.builderMaxTrades,
-            el.builderTarget, el.builderLossLimit,
-        ].forEach((inp) => {
-            if (inp) inp.addEventListener('change', renderWorkspace);
-        });
+        wireWorkspaceDrag();
 
         el.navMenu.addEventListener('click', () => {
             const links = $('.nav__links');
@@ -1302,6 +1742,7 @@
         wireEvents();
         buildTicker();
         buildScannerCards();
+        renderPalette();
         state.contract.type = el.contractBtns[0].dataset.contract;
 
         const appId = cfg('appId', '1089');

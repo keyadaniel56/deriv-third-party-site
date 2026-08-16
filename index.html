@@ -581,90 +581,88 @@
         <!-- ============ Bot builder (DBot-style) ============ -->
         <div id="bot-builder" class="modal modal--builder" hidden>
             <div class="modal__backdrop"></div>
-            <div class="modal__dialog glass builder">
-                <div class="builder__header">
-                    <div class="builder__titles">
-                        <span class="builder__eyebrow">Bot Builder</span>
-                        <h3 id="builder-title">Strategy builder</h3>
+            <div class="modal__dialog builder">
+                <header class="builder__topbar">
+                    <div class="builder__brand">
+                        <span class="builder__logo">T</span>
+                        <span class="builder__brand-name">TradersUnit <span>Bot Builder</span></span>
+                        <span class="builder__workspace" id="builder-workspace-name">untitled workspace</span>
                     </div>
-                    <div class="builder__actions">
+                    <div class="builder__topbar-actions">
+                        <button id="builder-reset" class="builder__icon-btn" type="button" title="Reset workspace">&#8634;</button>
+                        <a class="builder__open-dbot" href="https://bot.deriv.com" target="_blank" rel="noopener" title="Open in Deriv Bot">Open in Deriv Bot</a>
                         <span id="builder-conn" class="builder__conn">Not connected</span>
-                        <button id="builder-run" class="btn btn--primary" type="button">Run</button>
-                        <a class="btn btn--ghost" href="https://bot.deriv.com" target="_blank" rel="noopener">Open in Deriv Bot</a>
+                        <button id="builder-run" class="builder__run" type="button">
+                            <span id="builder-run-label">Run</span>
+                        </button>
                         <button id="builder-close" class="modal__close" type="button" aria-label="Close">&times;</button>
                     </div>
-                </div>
-                <div class="builder__body">
-                    <aside class="builder__blocks">
-                        <h4>Strategy blocks</h4>
-                        <p class="builder__hint">Click a block to add it to the workspace.</p>
-                        <div class="builder__category">Start</div>
-                        <button class="ws-btn ws-btn--trigger" type="button" data-block="every-tick">Every tick</button>
-                        <button class="ws-btn ws-btn--trigger" type="button" data-block="once">Once</button>
-                        <div class="builder__category">Trading</div>
-                        <button class="ws-btn ws-btn--trade" type="button" data-block="trade-options">Trade options</button>
-                        <button class="ws-btn ws-btn--market" type="button" data-block="buy-contract">Buy contract</button>
-                        <div class="builder__category">Control</div>
-                        <button class="ws-btn ws-btn--logic" type="button" data-block="if-win">If win</button>
-                        <button class="ws-btn ws-btn--logic" type="button" data-block="if-loss">If loss</button>
-                        <button class="ws-btn ws-btn--logic" type="button" data-block="repeat">Repeat while balance &gt; target</button>
-                        <button class="ws-btn ws-btn--danger" type="button" data-block="pause">Pause between trades</button>
+                </header>
+
+                <div class="builder__main">
+                    <aside class="builder__palette">
+                        <div class="builder__palette-head">
+                            <h4>Strategy blocks</h4>
+                            <input id="palette-search" class="builder__search" type="search" placeholder="Search blocks" autocomplete="off" />
+                        </div>
+                        <div id="palette-cats" class="builder__cats"></div>
                     </aside>
 
-                    <div class="builder__workspace">
+                    <div class="builder__canvas">
                         <div id="builder-workspace" class="ws"></div>
                     </div>
 
-                    <aside class="builder__settings">
-                        <h4>Run settings</h4>
-                        <div class="builder__field">
-                            <label for="builder-market">Market</label>
-                            <select id="builder-market"></select>
+                    <aside class="builder__runpanel">
+                        <div class="builder__tabs">
+                            <button type="button" class="is-active" data-tab="run">Run status</button>
+                            <button type="button" data-tab="transactions">Transactions</button>
+                            <button type="button" data-tab="journal">Journal</button>
+                            <button type="button" data-tab="summary">Summary</button>
                         </div>
-                        <div class="builder__field">
-                            <label for="builder-type">Contract type</label>
-                            <select id="builder-type">
-                                <option value="CALL">Rise</option>
-                                <option value="PUT">Fall</option>
-                                <option value="DIGITEVEN">Even</option>
-                                <option value="DIGITODD">Odd</option>
-                            </select>
-                        </div>
-                        <div class="builder__field">
-                            <label for="builder-duration">Duration</label>
-                            <div class="builder__row">
-                                <input id="builder-duration" type="number" min="1" step="1" value="1">
-                                <select id="builder-unit">
-                                    <option value="t">ticks</option>
-                                    <option value="m">minutes</option>
-                                </select>
+                        <div class="builder__tabbody">
+                            <div id="tab-run" class="builder__tab is-active">
+                                <div class="builder__runstate">
+                                    <div id="runstate-ic" class="builder__runstate-ic">&#9654;</div>
+                                    <div>
+                                        <div class="builder__runstate-title" id="runstate-title">Bot ready to run</div>
+                                        <div class="builder__runstate-sub" id="runstate-sub">Start the bot to begin automated trading.</div>
+                                    </div>
+                                </div>
+                                <label class="builder__mini-field">
+                                    Stop after
+                                    <input id="builder-maxtrades" type="number" min="1" step="1" value="20" />
+                                    trades
+                                </label>
                             </div>
-                        </div>
-                        <div class="builder__field">
-                            <label for="builder-stake">Stake</label>
-                            <input id="builder-stake" type="number" min="0.5" step="0.5" value="10">
-                        </div>
-                        <div class="builder__field">
-                            <label for="builder-maxtrades">Max trades</label>
-                            <input id="builder-maxtrades" type="number" min="1" step="1" value="10">
-                        </div>
-                        <div class="builder__field">
-                            <label for="builder-target">Profit target (wins to stop)</label>
-                            <input id="builder-target" type="number" min="0" step="1" value="3">
-                        </div>
-                        <div class="builder__field">
-                            <label for="builder-losslimit">Loss limit (consecutive)</label>
-                            <input id="builder-losslimit" type="number" min="0" step="1" value="3">
+                            <div id="tab-transactions" class="builder__tab">
+                                <div class="builder__tx">
+                                    <div class="builder__tx-head">#</div>
+                                    <div class="builder__tx-head">Contract</div>
+                                    <div class="builder__tx-head">Stake</div>
+                                    <div class="builder__tx-head">P/L</div>
+                                </div>
+                                <div id="builder-transactions" class="builder__txbody"></div>
+                            </div>
+                            <div id="tab-journal" class="builder__tab">
+                                <div id="builder-log" class="builder__journal"></div>
+                            </div>
+                            <div id="tab-summary" class="builder__tab">
+                                <div class="builder__summary">
+                                    <div class="builder__summary-row"><span>Total trades</span><span id="sum-trades">0</span></div>
+                                    <div class="builder__summary-row"><span>Total stake</span><span id="sum-stake">0.00</span></div>
+                                    <div class="builder__summary-row"><span>Contracts won</span><span id="sum-wins">0</span></div>
+                                    <div class="builder__summary-row"><span>Contracts lost</span><span id="sum-losses">0</span></div>
+                                    <div class="builder__summary-row builder__summary-row--total"><span>Net profit</span><span id="sum-profit">0.00</span></div>
+                                </div>
+                            </div>
                         </div>
                     </aside>
                 </div>
-                <div class="builder__log">
-                    <div class="builder__loghead">
-                        <strong id="builder-log-title">Run log</strong>
-                        <span id="builder-log-status"></span>
-                    </div>
-                    <div id="builder-log" class="builder__logbody"></div>
-                </div>
+
+                <footer class="builder__statusbar">
+                    <span id="builder-status">Ready</span>
+                    <span id="builder-status-right"></span>
+                </footer>
             </div>
         </div>
 
