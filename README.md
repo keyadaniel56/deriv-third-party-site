@@ -36,30 +36,36 @@ Note: proposals work **without authentication** on this channel. The required pa
 
 ### Trading — REST + authenticated WebSocket
 
-1. The user pastes a **Deriv API token** (created in the Deriv dashboard with `read` + `trade` scopes).
-2. `GET https://api.derivws.com/trading/v1/options/accounts` with headers
-   `Authorization: Bearer <token>` and `Deriv-App-ID: <your_app_id>` → list of Options accounts.
-3. `POST https://api.derivws.com/trading/v1/options/accounts/{accountId}/otp` (same headers) → returns
-   `{ "data": { "url": "wss://api.derivws.com/trading/v1/options/ws/demo?otp=…" } }` (or `ws/real` for real accounts).
-4. Connect to that URL → authenticated channel for the user's account.
-   - Balance: `{"balance": 1}` → `balance.balance`, `balance.currency`, `balance.loginid`.
-   - Buy: `{"buy": "<proposal_id>", "price": …}` → `buy.contract_id`, `buy.payout`, `buy.balance_after`, etc.
+1. The user clicks **Connect with Deriv** → the site redirects to the Deriv **OAuth 2.0** sign-in
+   (`https://auth.deriv.com/oauth2/auth`) using the Authorization Code flow **with PKCE**:
+   - `response_type=code`, `client_id` (your registered OAuth2 app id), `redirect_uri`, `scope=trade`,
+     `state`, `code_challenge` + `code_challenge_method=S256`.
+   - The PKCE `code_verifier` and `state` are kept in `sessionStorage` before the redirect.
+2. Deriv redirects back to your site with `?code=…&state=…`. The site verifies `state` (CSRF) and exchanges the
+   code at `https://auth.deriv.com/oauth2/token` (form-encoded POST, so it works client-side from a static site —
+   the endpoint answers with `Access-Control-Allow-Origin`).
+3. The resulting access token is used exactly like an API token:
+   - `GET https://api.derivws.com/trading/v1/options/accounts` with headers
+     `Authorization: Bearer <token>` and `Deriv-App-ID: <your_app_id>` → list of Options accounts.
+   - `POST https://api.derivws.com/trading/v1/options/accounts/{accountId}/otp` (same headers) → returns
+     `{ "data": { "url": "wss://api.derivws.com/trading/v1/options/ws/demo?otp=…" } }` (or `ws/real` for real accounts).
+   - Connect to that URL → authenticated channel for the user's account.
+     - Balance: `{"balance": 1}` → `balance.balance`, `balance.currency`, `balance.loginid`.
+     - Buy: `{"buy": "<proposal_id>", "price": …}` → `buy.contract_id`, `buy.payout`, `buy.balance_after`, etc.
 
-Both REST calls are CORS-enabled, so the whole flow runs client-side from a static site.
-
-> **OAuth 2.0** is also supported by the new API but requires a `client_id`/`client_secret` and a **server-side**
-> token exchange (PKCE), so it is not practical for a pure static site. This site therefore uses the **API token +
-> OTP** flow, which is exactly what a static third-party site should use. If you run a backend, you can add OAuth 2.0
-> on top — see [developers.deriv.com/docs/intro/oauth](https://developers.deriv.com/docs/intro/oauth).
+The same token path works with a manually pasted **Deriv API token** (created in the Deriv dashboard) — the site
+supports both sign-in methods.
 
 ### Step-by-step checklist for a registered third-party site
 
 1. Create a Deriv account at [api.deriv.com](https://api.deriv.com) (demo works immediately).
 2. **Dashboard → Applications** → register a new app to get your **App ID** (`app_id`).
-3. Put your `app_id` in `js/config.js`. It is sent as the `Deriv-App-ID` header for authenticated calls.
+   - Put your `app_id` in `js/config.js`. It is sent as the `Deriv-App-ID` header for authenticated calls.
    - `1089` (Deriv's public test id) works for public market data but **not** for trading.
-4. Users create an **API token** in their Deriv dashboard (scopes `read` + `trade`) and paste it into this site.
-5. The site opens the authenticated WebSocket via the accounts + OTP REST flow and trades for the user.
+3. Register an **OAuth 2.0** app to get your `client_id`, add your **redirect URI**, and set `oauth2ClientId`
+   (+ `oauthRedirectUri` if it differs from the deployed domain) in `js/config.js`.
+   - Scope requested: `trade`.
+4. That's it for users — they click **Connect with Deriv**, authenticate on Deriv, and return authenticated.
 
 ---
 
@@ -81,11 +87,15 @@ Edit `js/config.js`:
 
 ```js
 appId: '1089',            // ← replace with YOUR registered Deriv app id (required for trading)
+oauth2ClientId: '',       // ← REQUIRED for the "Connect with Deriv" OAuth sign-in button
+oauthRedirectUri: '',     // ← leave empty to use the current site URL; must match the registered URI
 domain: 'www.tradersunit.com', // ← your deployed domain
 ```
 
 - Public market data needs no app id at all; the `Deriv-App-ID` header is only required for the authenticated
   accounts/OTP calls and trading.
+- The OAuth `redirect_uri` is derived from the current page URL by default — register that exact URL in the
+  Deriv dashboard. Your domain must be served over HTTPS for OAuth.
 - `scannerSymbols` may be expanded with any symbol returned by `active_symbols` (Volatility `R_10…R_100`,
   Boom/Crash `BOOM500`/`CRASH500`, Step `1HZ…V`, Jump `JD…`, `stpRNG…`, `RDBULL`/`RDBEAR`, and more).
 
@@ -107,8 +117,8 @@ Deploy to any static host (Netlify, Vercel, GitHub Pages, your own nginx, etc.).
   sparklines.
 - **Manual Trader** — live `proposal` subscription (payout/stake, Rise/Fall, duration in minutes/ticks/seconds/
   hours) on the public channel, then `buy` via the authenticated channel against the user's connected Deriv account.
-- **Connect with Deriv** — paste a Deriv API token; the site resolves it to the user's account and balance via
-  the REST accounts + OTP flow.
+- **Connect with Deriv** — redirects to Deriv's OAuth 2.0 sign-in (PKCE) and, on return, resolves the user's
+  account and balance via the REST accounts + OTP flow. Manual API-token paste is supported as a fallback.
 - **Free bot strategies** — DBot-compatible strategy templates (no code runs them on this site; import into
   [Deriv Bot](https://bot.deriv.com)).
 

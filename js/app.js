@@ -51,6 +51,7 @@
         stakeInput: $('#stake-input'),
         tradeAuthRequired: $('#trade-auth-required'),
         tradeConnectBtn: $('#trade-connect-btn'),
+        tradeTokenBtn: $('#trade-token-btn'),
         tradeAccountInfo: $('#trade-account-info'),
         tradeAccountId: $('#trade-account-id'),
         tradeAccountBalance: $('#trade-account-balance'),
@@ -66,6 +67,7 @@
 
         connectModal: $('#connect-modal'),
         connectClose: $('#connect-close'),
+        oauthBtn: $('#oauth-btn'),
         tokenInput: $('#token-input'),
         tokenApplyBtn: $('#token-apply-btn'),
         connectStatus: $('#connect-status'),
@@ -669,8 +671,123 @@
     }
 
     /* =========================================================
-     * Auth — Deriv API token → REST accounts → OTP → trading WS
+     * Auth — OAuth 2.0 (PKCE) or Deriv API token → REST accounts
+     * → OTP → trading WS
      * ========================================================= */
+
+    async function generatePkce() {
+        const array = crypto.getRandomValues(new Uint8Array(64));
+        const codeVerifier = Array.from(array)
+            .map((v) => 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~'[v % 66])
+            .join('');
+        const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(codeVerifier));
+        const codeChallenge = btoa(String.fromCharCode.apply(null, new Uint8Array(hash)))
+            .replace(/\+/g, '-')
+            .replace(/\//g, '_')
+            .replace(/=+$/, '');
+        const state = crypto.getRandomValues(new Uint8Array(16))
+            .reduce((s, b) => s + b.toString(16).padStart(2, '0'), '');
+        return { codeVerifier, codeChallenge, state };
+    }
+
+    function oauthRedirectUri() {
+        return cfg('oauthRedirectUri', '') || window.location.origin + window.location.pathname;
+    }
+
+    function oauthLoginUrl(pkce) {
+        const params = new URLSearchParams({
+            response_type: 'code',
+            client_id: cfg('oauth2ClientId', ''),
+            redirect_uri: oauthRedirectUri(),
+            scope: cfg('oauthScopes', 'trade'),
+            state: pkce.state,
+            code_challenge: pkce.codeChallenge,
+            code_challenge_method: 'S256',
+        });
+        return cfg('oauthAuthUrl', 'https://auth.deriv.com/oauth2/auth') + '?' + params.toString();
+    }
+
+    async function startOAuth() {
+        if (!cfg('oauth2ClientId', '')) {
+            toast('OAuth is not configured. Set oauth2ClientId in js/config.js or use an API token.', 'error');
+            openModal(el.connectModal);
+            return;
+        }
+        try {
+            const pkce = await generatePkce();
+            try {
+                sessionStorage.setItem('oauth_verifier', pkce.codeVerifier);
+                sessionStorage.setItem('oauth_state', pkce.state);
+            } catch (e) { /* noop */ }
+            window.location.href = oauthLoginUrl(pkce);
+        } catch (e) {
+            toast('Could not start OAuth sign-in.', 'error');
+        }
+    }
+
+    async function exchangeOAuthCode(code, verifier) {
+        const res = await fetch(cfg('oauthTokenUrl', 'https://auth.deriv.com/oauth2/token'), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({
+                grant_type: 'authorization_code',
+                client_id: cfg('oauth2ClientId', ''),
+                code: code,
+                code_verifier: verifier,
+                redirect_uri: oauthRedirectUri(),
+            }).toString(),
+        });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.access_token) {
+            throw new Error(json.error_description || json.error || 'Token exchange failed');
+        }
+        return json.access_token;
+    }
+
+    async function handleOAuthCallback() {
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get('code');
+        const state = params.get('state');
+        const err = params.get('error');
+        const cleanUrl = () => {
+            window.history.replaceState({}, document.title, window.location.origin + window.location.pathname);
+        };
+        if (err) {
+            cleanUrl();
+            if (err !== 'access_denied') toast('Sign-in failed: ' + err, 'error');
+            return false;
+        }
+        if (!code) return false;
+
+        let verifier = null;
+        let storedState = null;
+        try {
+            verifier = sessionStorage.getItem('oauth_verifier');
+            storedState = sessionStorage.getItem('oauth_state');
+        } catch (e) { /* noop */ }
+        cleanUrl();
+        try {
+            sessionStorage.removeItem('oauth_verifier');
+            sessionStorage.removeItem('oauth_state');
+        } catch (e) { /* noop */ }
+
+        if (!verifier || !storedState || storedState !== state) {
+            toast('OAuth state mismatch — sign-in aborted.', 'error');
+            return true;
+        }
+
+        el.connectStatus.textContent = 'Completing sign-in…';
+        try {
+            const token = await exchangeOAuthCode(code, verifier);
+            await state.client.connectAuthenticated(token);
+            try { localStorage.setItem('tu_token', token); } catch (e) { /* noop */ }
+            handleAuthorize(state.client.account);
+        } catch (e) {
+            toast('OAuth sign-in failed: ' + e.message, 'error');
+        }
+        el.connectStatus.textContent = '';
+        return true;
+    }
 
     function handleAuthorize(account) {
         state.account = account;
@@ -775,10 +892,12 @@
      * Event wiring
      * ========================================================= */
     function wireEvents() {
-        el.navConnect.addEventListener('click', () => openModal(el.connectModal));
+        el.navConnect.addEventListener('click', startOAuth);
         el.connectClose.addEventListener('click', closeModals);
+        el.oauthBtn.addEventListener('click', startOAuth);
         el.tokenApplyBtn.addEventListener('click', () => applyToken(el.tokenInput.value.trim()));
-        el.tradeConnectBtn.addEventListener('click', () => openModal(el.connectModal));
+        el.tradeConnectBtn.addEventListener('click', startOAuth);
+        el.tradeTokenBtn.addEventListener('click', () => openModal(el.connectModal));
 
         $$('.modal__backdrop').forEach((b) => b.addEventListener('click', closeModals));
         document.addEventListener('keydown', (e) => {
@@ -899,7 +1018,8 @@
             setLoaderProgress(82, 'Starting AI market scanner…');
             setupScanner();
             setLoaderProgress(90, 'Preparing trading desk…');
-            await restoreAuth();
+            const handledOAuth = await handleOAuthCallback();
+            if (!handledOAuth) await restoreAuth();
             refreshProposal();
             setLoaderProgress(100, 'Ready');
         } catch (err) {

@@ -4,13 +4,14 @@
  * To turn this into a fully registered Deriv third-party site (new API,
  * see https://developers.deriv.com/docs/intro/api-overview/):
  *   1. Create a Deriv account and register an application.
- *   2. Copy the generated App ID into `appId` below. It is sent as the
- *      `Deriv-App-ID` header and is required for authenticated trading
+ *   2. Register an OAuth2 app to obtain a `client_id` and set `oauth2ClientId`
+ *      below (required for the "Connect with Deriv" OAuth sign-in button).
+ *   3. Add your redirect URI to the app; set `oauthRedirectUri` if it differs
+ *      from the deployed domain.
+ *   4. `appId` is sent as the `Deriv-App-ID` header for authenticated trading
  *      (balance, buy) via the REST accounts + OTP flow.
- *   3. Public market data (symbols, ticks, ticks_history, proposals) is
+ *   5. Public market data (symbols, ticks, ticks_history, proposals) is
  *      available on `publicWsEndpoint` with NO authentication.
- *   4. Traders connect by pasting a Deriv API token (scopes: read, trade)
- *      from the Deriv dashboard.
  *
  * appId 1089 is Deriv's public test app id — it works for public market
  * data, but authenticated trading requires your own registered app id.
@@ -21,8 +22,19 @@ window.SITE_CONFIG = {
     tagline: 'Deriv trading workspace for disciplined execution',
     domain: 'www.tradersunit.com',
 
-    /* Your registered Deriv application id. */
+    /* Your registered Deriv application id (legacy) — sent as the
+     * `Deriv-App-ID` header for authenticated trading. */
     appId: '1089',
+
+    /* OAuth 2.0 (new API) — used when the user clicks "Connect with Deriv".
+     * Register an OAuth2 app in the Deriv dashboard to get your client_id,
+     * and add your redirect URI (your domain) to it.
+     * See https://developers.deriv.com/docs/intro/oauth/ */
+    oauth2ClientId: '',   // ← REQUIRED for OAuth sign-in, e.g. 'app12345'
+    oauthRedirectUri: '', // ← leave empty to use the current site URL; must match the registered URI
+    oauthScopes: 'trade',
+    oauthAuthUrl: 'https://auth.deriv.com/oauth2/auth',
+    oauthTokenUrl: 'https://auth.deriv.com/oauth2/token',
 
     /* Brand / theme tokens (also used by the in-page SEO bootstrap). */
     primaryColor: '#062E78',

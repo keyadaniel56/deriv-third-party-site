@@ -268,11 +268,12 @@
 
                         <div id="trade-auth-required" class="trade-auth">
                             <p>
-                                Trading requires a connected Deriv account. Paste a Deriv API token (scopes:
-                                <code>read</code>, <code>trade</code>) to connect.
+                                Trading requires a connected Deriv account. Sign in with Deriv (recommended) or paste
+                                a Deriv API token with <code>read</code> and <code>trade</code> scopes.
                             </p>
                             <div class="trade-auth__actions">
                                 <button id="trade-connect-btn" class="btn btn--primary" type="button">Connect with Deriv</button>
+                                <button id="trade-token-btn" class="btn btn--ghost" type="button">Use API token</button>
                             </div>
                         </div>
                         <div id="trade-account-info" class="trade-account" hidden>
@@ -563,13 +564,15 @@
                 </div>
                 <div class="modal__body">
                     <p class="section__muted">
-                        Paste a Deriv API token to connect your Deriv account and trade in real time. Create one in
-                        the Deriv dashboard under <strong>API token</strong> with scopes <code>read</code> and
-                        <code>trade</code>. Tokens are stored locally in your browser.
+                        Sign in with your Deriv account to trade in real time. You will be redirected to Deriv to
+                        authorise this app — or paste a Deriv API token (scopes <code>read</code>, <code>trade</code>)
+                        for manual access. Tokens are stored locally in your browser.
                     </p>
+                    <button id="oauth-btn" class="btn btn--primary btn--lg btn--block" type="button">Sign in with Deriv</button>
+                    <div class="modal__divider"><span>or</span></div>
                     <label class="field-label" for="token-input">Deriv API token</label>
                     <input id="token-input" class="input" type="password" placeholder="Paste your token…" autocomplete="off" />
-                    <button id="token-apply-btn" class="btn btn--primary btn--lg btn--block" type="button">Connect token</button>
+                    <button id="token-apply-btn" class="btn btn--ghost btn--block" type="button">Use API token</button>
                     <p id="connect-status" class="form-status" role="status"></p>
                 </div>
             </div>

@@ -1,0 +1,16 @@
+# Netlify deployment config for TradersUnit (static site, no build step)
+
+[build]
+  publish = "."
+  command = "echo 'Static site — no build step required.'"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Basic security headers for the whole site
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
