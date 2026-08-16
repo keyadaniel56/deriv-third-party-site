@@ -12,9 +12,6 @@
  *      (balance, buy) via the REST accounts + OTP flow.
  *   5. Public market data (symbols, ticks, ticks_history, proposals) is
  *      available on `publicWsEndpoint` with NO authentication.
- *
- * appId 1089 is Deriv's public test app id — it works for public market
- * data, but authenticated trading requires your own registered app id.
  * =========================================================================
  */
 window.SITE_CONFIG = {
@@ -22,15 +19,15 @@ window.SITE_CONFIG = {
     tagline: 'Deriv trading workspace for disciplined execution',
     domain: 'www.tradersunit.com',
 
-    /* Your registered Deriv application id (legacy) — sent as the
+    /* Your registered Deriv application id (new API) — sent as the
      * `Deriv-App-ID` header for authenticated trading. */
-    appId: '1089',
+    appId: '33Kfcrd5ytoiemPIb4wIj',
 
     /* OAuth 2.0 (new API) — used when the user clicks "Connect with Deriv".
      * Register an OAuth2 app in the Deriv dashboard to get your client_id,
      * and add your redirect URI (your domain) to it.
      * See https://developers.deriv.com/docs/intro/oauth/ */
-    oauth2ClientId: '',   // ← REQUIRED for OAuth sign-in, e.g. 'app12345'
+    oauth2ClientId: '33Kfcrd5ytoiemPIb4wIj', // ← REQUIRED for OAuth sign-in, e.g. 'app12345'
     oauthRedirectUri: '', // ← leave empty to use the current site URL; must match the registered URI
     oauthScopes: 'trade',
     oauthAuthUrl: 'https://auth.deriv.com/oauth2/auth',
