@@ -235,7 +235,12 @@
         async connectAuthenticated(token) {
             this.token = token;
 
-            const accountsRes = await this.getAccounts();
+            let accountsRes;
+            try {
+                accountsRes = await this.getAccounts();
+            } catch (e) {
+                throw new Error('Fetching accounts failed: ' + e.message);
+            }
             const list = Array.isArray(accountsRes.data)
                 ? accountsRes.data
                 : Array.isArray(accountsRes.accounts)
@@ -243,19 +248,31 @@
                 : Array.isArray(accountsRes)
                 ? accountsRes
                 : [];
+            console.info('Deriv accounts:', JSON.stringify(list.map((a) => ({
+                account_id: a.account_id, account_type: a.account_type, currency: a.currency, status: a.status,
+            }))));
             const account = list.find((a) => a.account_id || a.id || a.accountId);
             if (!account) {
-                throw new Error('No Options account found for this token. Create a demo account first.');
+                throw new Error('No Options trading account found for this login. Create a demo account in the Deriv app first.');
             }
             const accountId = account.account_id || account.id || account.accountId;
 
-            const otp = await this.getOtp(accountId);
+            let otp;
+            try {
+                otp = await this.getOtp(accountId);
+            } catch (e) {
+                throw new Error('Obtaining OTP failed: ' + e.message);
+            }
             const url = otp.data && (otp.data.url || otp.data.ws_url);
             if (!url) {
-                throw new Error('Could not obtain an authenticated WebSocket URL (OTP).');
+                throw new Error('OTP response did not include a WebSocket URL.');
             }
 
-            this.authWs = await this._openSocket(url);
+            try {
+                this.authWs = await this._openSocket(url);
+            } catch (e) {
+                throw new Error('Opening the authenticated WebSocket failed: ' + e.message);
+            }
             this.authWs.onmessage = (e) => this._onMessage(e.data, this.authWs);
             this.authWs.onclose = () => {
                 this.authConnected = false;
@@ -263,7 +280,15 @@
             };
             this.authConnected = true;
 
-            const bal = await this.sendAuth({ balance: 1 });
+            let bal;
+            try {
+                bal = await this.sendAuth({ balance: 1 });
+            } catch (e) {
+                throw new Error('Balance request failed: ' + e.message);
+            }
+            if (!bal || !bal.balance) {
+                throw new Error('Balance response was empty.');
+            }
             this.account = bal.balance;
             this.onBalance(bal.balance);
             return this.account;

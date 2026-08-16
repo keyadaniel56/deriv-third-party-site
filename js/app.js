@@ -783,6 +783,7 @@
             try { localStorage.setItem('tu_token', token); } catch (e) { /* noop */ }
             handleAuthorize(state.client.account);
         } catch (e) {
+            console.error('OAuth sign-in failed:', e);
             toast('OAuth sign-in failed: ' + e.message, 'error');
         }
         el.connectStatus.textContent = '';
@@ -803,7 +804,7 @@
 
     function renderAccount() {
         const acc = state.account;
-        if (acc) {
+        if (acc && acc.loginid) {
             el.accountChip.hidden = false;
             el.accountChipText.textContent = acc.loginid + ' · ' + fmt(acc.balance, 2) + ' ' + acc.currency;
             el.tradeAuthRequired.hidden = true;
