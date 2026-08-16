@@ -1707,6 +1707,24 @@ body.modal-open {
     transition: all 0.15s ease;
 }
 
+.builder__tool-btn {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #1b1f2b;
+    background: #ffffff;
+    border: 1px solid #e3e6ef;
+    border-radius: 6px;
+    padding: 0.55rem 1.1rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.builder__tool-btn:hover {
+    border-color: #c3c9da;
+    background: #f6f7fb;
+}
+
 .builder__open-dbot:hover {
     border-color: #c3c9d8;
     color: #111827;
@@ -1954,12 +1972,13 @@ body.modal-open {
     padding: 1.1rem 1.6rem;
     border-radius: 6px 10px 10px 6px;
     font-size: 1.3rem;
-    color: #333;
-    box-shadow: 0 3px 8px rgba(30, 40, 80, 0.12);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(20, 30, 70, 0.24);
     border: 1px solid transparent;
     min-width: 300px;
     max-width: 100%;
     cursor: grab;
+    background: #6c5ce7;
 }
 
 .bb-block.dragging {
@@ -1971,6 +1990,7 @@ body.modal-open {
     font-size: 1.35rem;
     letter-spacing: 0.04em;
     margin-bottom: 0.6rem;
+    color: #ffffff;
 }
 
 .bb-block__field {
@@ -1982,14 +2002,14 @@ body.modal-open {
 }
 
 .bb-block__field > span:first-child {
-    color: #4b5563;
+    color: rgba(255, 255, 255, 0.92);
     font-weight: 600;
     min-width: 82px;
     font-size: 1.25rem;
 }
 
 .bb-inp {
-    border: 1px solid #c9cfdf;
+    border: 1px solid rgba(255, 255, 255, 0.85);
     background: #ffffff;
     color: #1b1f2b;
     border-radius: 5px;
@@ -2001,7 +2021,8 @@ body.modal-open {
 }
 
 .bb-inp:focus {
-    border-color: #6c5ce7;
+    border-color: #ffffff;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35);
 }
 
 select.bb-inp {
@@ -2014,45 +2035,54 @@ select.bb-inp {
     align-items: center;
 }
 
-.bb-block--trigger { background: #f0ecfd; border-color: #d7cbfc; }
-.bb-block--trigger .bb-block__title { color: #6c5ce7; }
-.bb-block--trigger .bb-inp { border-color: #c9baf5; }
+.bb-block--trigger { background: #6c5ce7; border-color: #5846ce; }
+.bb-block--trade { background: #0e8a68; border-color: #0b7356; }
+.bb-block--trade-def { background: #1e3bb8; border-color: #19319c; }
+.bb-block--buy { background: #2f9e44; border-color: #28873b; }
+.bb-block--sell { background: #ff9f43; border-color: #e08a30; }
+.bb-block--purchase { background: #2bb673; border-color: #249c62; }
+.bb-block--indicator { background: #2f6fdb; border-color: #285fc0; }
+.bb-block--logic { background: #d6336c; border-color: #b92d5e; }
+.bb-block--math { background: #c47a10; border-color: #a8690d; }
+.bb-block--variable { background: #6d46c2; border-color: #5e3cab; }
+.bb-block--text { background: #2f9e5b; border-color: #28874e; }
+.bb-block--colour { background: #e5134d; border-color: #c41042; }
+.bb-block--list { background: #2f8c9c; border-color: #287a88; }
+.bb-block--stat { background: #4a4ea9; border-color: #3f4391; }
 
-.bb-block--trade { background: #e2f6ef; border-color: #b7e8d7; }
-.bb-block--trade .bb-block__title { color: #0e8a68; }
-.bb-block--trade .bb-inp { border-color: #9fdcc4; }
+.bb-block--root {
+    background: #eef1fb;
+    border: 2px solid #1e3bb8;
+    border-left-width: 6px;
+    border-radius: 8px 12px 12px 8px;
+    color: #1b1f2b;
+    cursor: default;
+    min-width: 320px;
+    box-shadow: 0 4px 12px rgba(30, 59, 184, 0.18);
+}
 
-.bb-block--buy { background: #e4f6e5; border-color: #bae5bd; }
-.bb-block--buy .bb-block__title { color: #2f9e44; }
+.bb-block--root .bb-block__title {
+    color: #1e3bb8;
+    margin-bottom: 0.8rem;
+}
 
-.bb-block--sell { background: #fff4e4; border-color: #f8dfba; }
-.bb-block--sell .bb-block__title { color: #c47a10; }
-.bb-block--sell .bb-inp { border-color: #ecc795; }
+.bb-block--root .bb-block__field > span:first-child {
+    color: #4b5563;
+}
 
-.bb-block--purchase { background: #e2f6ef; border-color: #b7e8d7; }
-.bb-block--purchase .bb-block__title { color: #0e8a68; }
-
-.bb-block--indicator { background: #e9f0fe; border-color: #c4d7fb; }
-.bb-block--indicator .bb-block__title { color: #2f6fdb; }
-
-.bb-block--logic { background: #fdecf1; border-color: #f8c9d8; }
-.bb-block--logic .bb-block__title { color: #d6336c; }
-
-.bb-block--math { background: #fff3e2; border-color: #f8dfba; }
-.bb-block--math .bb-block__title { color: #c47a10; }
-
-.bb-block--variable { background: #f2ecfd; border-color: #d9c7f6; }
-.bb-block--variable .bb-block__title { color: #6d46c2; }
-
-.bb-block--text { background: #e9f7ee; border-color: #c3e8d2; }
-.bb-block--text .bb-block__title { color: #2f9e5b; }
-
-.bb-block--stat { background: #ececff; border-color: #cdcef5; }
-.bb-block--stat .bb-block__title { color: #4a4ea9; }
+.bb-root__inner {
+    margin-left: 0.6rem;
+    padding-left: 1.6rem;
+    border-left: 2px dashed #b9c0d2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
 
 .bb-block--static {
     background: #ffffff;
     border-color: #e0e3ec;
+    color: #4b5563;
     box-shadow: none;
 }
 
@@ -2068,8 +2098,8 @@ select.bb-inp {
     top: 0.4rem;
     right: 0.5rem;
     border: none;
-    background: rgba(0, 0, 0, 0.06);
-    color: #555;
+    background: rgba(255, 255, 255, 0.22);
+    color: #ffffff;
     border-radius: 50%;
     width: 20px;
     height: 20px;
@@ -2078,6 +2108,11 @@ select.bb-inp {
     cursor: pointer;
     opacity: 0;
     transition: opacity 0.15s ease;
+}
+
+.bb-block--static .bb-block__del {
+    background: rgba(0, 0, 0, 0.06);
+    color: #555;
 }
 
 .bb-block:hover .bb-block__del {

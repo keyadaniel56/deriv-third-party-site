@@ -76,6 +76,9 @@
         botBuilder: $('#bot-builder'),
         builderWorkspaceName: $('#builder-workspace-name'),
         builderReset: $('#builder-reset'),
+        builderSave: $('#builder-save'),
+        builderImport: $('#builder-import'),
+        builderImportFile: $('#builder-import-file'),
         builderRun: $('#builder-run'),
         builderRunLabel: $('#builder-run-label'),
         builderClose: $('#builder-close'),
@@ -942,6 +945,8 @@
         {
             cat: 'Trade', cls: 'trade', color: '#0e8a68', open: true, blocks: [
                 { id: 'trade-options', label: 'Trade options' },
+                { id: 'trade-options-multiplier', label: 'Trade options multipliers' },
+                { id: 'trade-options-accumulator', label: 'Trade options accumulators' },
                 { id: 'buy-contract', label: 'Buy contract' },
                 { id: 'sell-contract', label: 'Sell conditions' },
                 { id: 'sell-at-profit', label: 'Sell at profit' },
@@ -949,7 +954,13 @@
             ],
         },
         {
-            cat: 'Purchase conditions', cls: 'purchase', color: '#0e8a68', open: true, blocks: [
+            cat: 'Trade definitions', cls: 'trade-def', color: '#1e3bb8', open: false, blocks: [
+                { id: 'restart-trading', label: 'Restart trading conditions' },
+                { id: 'restart-on-error', label: 'Restart on error' },
+            ],
+        },
+        {
+            cat: 'Purchase conditions', cls: 'purchase', color: '#2bb673', open: true, blocks: [
                 { id: 'run-until-win', label: 'Run until a win' },
                 { id: 'run-until-loss', label: 'Run until a loss' },
                 { id: 'smart-purchase', label: 'Smart purchase' },
@@ -989,6 +1000,22 @@
                 { id: 'stat-wins', label: 'Total wins' },
                 { id: 'stat-losses', label: 'Total losses' },
                 { id: 'stat-balance', label: 'Balance' },
+            ],
+        },
+        {
+            cat: 'Text', cls: 'text', color: '#2f9e5b', open: false, blocks: [
+                { id: 'text', label: 'Text' },
+                { id: 'text-print', label: 'Print text' },
+            ],
+        },
+        {
+            cat: 'Colour', cls: 'colour', color: '#e5134d', open: false, blocks: [
+                { id: 'colour', label: 'Colour' },
+            ],
+        },
+        {
+            cat: 'List', cls: 'list', color: '#2f8c9c', open: false, blocks: [
+                { id: 'list', label: 'Create list' },
             ],
         },
     ];
@@ -1221,6 +1248,48 @@
         if (pre.stake) el.boStake.value = pre.stake;
     }
 
+    const ROOT_NEST_ORDER = [
+        'trade-options',
+        'trade-options-multiplier',
+        'trade-options-accumulator',
+        'buy-contract',
+        'run-until-win',
+        'run-until-loss',
+        'smart-purchase',
+        'sell-contract',
+        'sell-at-profit',
+        'sell-at-loss',
+    ];
+
+    function connectorEl() {
+        const c = document.createElement('div');
+        c.className = 'bb-connect';
+        return c;
+    }
+
+    function makeRootBlock(types) {
+        const root = document.createElement('div');
+        root.className = 'bb-block bb-block--root';
+        root.dataset.type = 'restart-trading';
+        const title = document.createElement('div');
+        title.className = 'bb-block__title';
+        title.innerHTML = '&#8635; Restart trading conditions';
+        root.appendChild(title);
+        const inner = document.createElement('div');
+        inner.className = 'bb-root__inner';
+        const nested = ROOT_NEST_ORDER.filter((t) => types.indexOf(t) !== -1);
+        let n = 0;
+        nested.forEach((type) => {
+            const node = buildBlock(type);
+            if (!node) return;
+            if (n) inner.appendChild(connectorEl());
+            inner.appendChild(node);
+            n++;
+        });
+        if (n) root.appendChild(inner);
+        return root;
+    }
+
     function renderWorkspace() {
         const ws = el.builderWorkspace;
         if (!state.bot || !state.bot.blocks.length) {
@@ -1228,14 +1297,21 @@
             return;
         }
         ws.innerHTML = '';
-        state.bot.blocks.forEach((type, i) => {
-            const node = buildBlock(type);
-            if (node) ws.appendChild(node);
-            if (i < state.bot.blocks.length - 1) {
-                const conn = document.createElement('div');
-                conn.className = 'bb-connect';
-                ws.appendChild(conn);
-            }
+        const trigger = state.bot.blocks.find((b) => TRIGGER_OPTIONS.some((t) => t[0] === b));
+        const rootBlocks = state.bot.blocks.filter((b) => ROOT_NEST_ORDER.indexOf(b) !== -1);
+        let top = 0;
+        const pushTop = (node) => {
+            if (!node) return;
+            if (top) ws.appendChild(connectorEl());
+            ws.appendChild(node);
+            top++;
+        };
+        if (trigger) pushTop(buildBlock(trigger));
+        pushTop(makeRootBlock(rootBlocks));
+        state.bot.blocks.forEach((type) => {
+            if (TRIGGER_OPTIONS.some((t) => t[0] === type)) return;
+            if (ROOT_NEST_ORDER.indexOf(type) !== -1) return;
+            pushTop(buildBlock(type));
         });
         rebindTradeOptions();
         applyTradeValues();
@@ -1271,6 +1347,10 @@
 
     function addBuilderBlock(type) {
         if (!state.bot) return;
+        if (type === 'restart-trading') {
+            toast('The "Restart trading conditions" root block is always present in the workspace.', 'info');
+            return;
+        }
         if (type === 'trade-options') {
             state.bot.blocks = state.bot.blocks.filter((b) => b !== 'trade-options');
         }
@@ -1307,6 +1387,103 @@
         botLog('Workspace reset to the default strategy.', 'info');
     }
 
+    function escXml(s) {
+        return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function serializeStrategy() {
+        const settings = state.bot && state.bot.blocks.length ? readBotSettings() : null;
+        const name = (state.bot && state.bot.title) || 'untitled workspace';
+        const maxTrades = Math.max(1, Number(el.builderMaxTrades.value) || 20);
+        const lines = ['<?xml version="1.0" encoding="UTF-8"?>', '<xml>'];
+        lines.push('  <strategy name="' + escXml(name) + '" max_trades="' + maxTrades + '">');
+        state.bot.blocks.forEach((type) => {
+            if (type === 'trade-options' && settings) {
+                lines.push('    <block type="trade-options">');
+                [
+                    ['market', settings.market],
+                    ['underlying', settings.symbol],
+                    ['contract_type', settings.contractType],
+                    ['duration', settings.duration],
+                    ['duration_unit', settings.unit],
+                    ['basis', settings.basis],
+                    ['stake', settings.stake],
+                ].forEach((pair) => {
+                    lines.push('      <field name="' + pair[0] + '">' + escXml(pair[1]) + '</field>');
+                });
+                lines.push('    </block>');
+            } else {
+                lines.push('    <block type="' + type + '" />');
+            }
+        });
+        lines.push('  </strategy>', '</xml>');
+        return lines.join('\n');
+    }
+
+    function saveStrategy() {
+        if (!state.bot || !state.bot.blocks.length) {
+            toast('Nothing to save yet.', 'warn');
+            return;
+        }
+        const name = ((state.bot.title || 'untitled workspace').replace(/[^\w -]+/g, '').trim() || 'strategy');
+        const blob = new Blob([serializeStrategy()], { type: 'application/xml' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = name + '.xml';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        botLog('Strategy saved as "' + name + '.xml".', 'info');
+    }
+
+    function parseStrategy(text) {
+        if (!text || text.indexOf('<xml>') === -1) {
+            toast('That file does not look like a saved strategy.', 'error');
+            return;
+        }
+        const nameMatch = text.match(/<strategy\s+name="([^"]*)"[^>]*max_trades="(\d+)"/);
+        const name = nameMatch ? nameMatch[1] : 'imported strategy';
+        const maxTrades = nameMatch ? Number(nameMatch[2]) || 20 : 20;
+        const blocks = [];
+        const blockRe = /<block\s+type="([^"]+)"/g;
+        let m;
+        while ((m = blockRe.exec(text)) !== null) {
+            if (m[1] !== 'restart-trading' && blocks.indexOf(m[1]) === -1) blocks.push(m[1]);
+        }
+        const fields = {};
+        const fieldRe = /<field\s+name="([^"]+)">([^<]*)<\/field>/g;
+        while ((m = fieldRe.exec(text)) !== null) fields[m[1]] = m[2];
+        if (!blocks.length) blocks.push('every-tick', 'trade-options', 'smart-purchase', 'sell-contract');
+        state.bot = {
+            key: null,
+            title: name,
+            pre: {
+                symbol: fields.underlying || 'R_100',
+                contractType: fields.contract_type || 'CALL',
+                duration: Number(fields.duration) || 1,
+                unit: fields.duration_unit || 'm',
+                basis: fields.basis || 'stake',
+                stake: Number(fields.stake) || 10,
+                maxTrades: maxTrades,
+            },
+            blocks: blocks,
+        };
+        el.builderWorkspaceName.textContent = name;
+        el.builderMaxTrades.value = maxTrades;
+        renderWorkspace();
+        botLog('Strategy "' + name + '" imported.', 'info');
+        setBuilderStatus('Bot ready to run', 'Start the bot to begin automated trading.');
+    }
+
+    function loadStrategyFile(file) {
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => parseStrategy(String(reader.result));
+        reader.readAsText(file);
+    }
+
     function switchBuilderTab(tab) {
         $$('#bot-builder .builder__tabs [data-tab]').forEach((t) => {
             t.classList.toggle('is-active', t.dataset.tab === tab);
@@ -1321,14 +1498,22 @@
         el.builderWorkspace.addEventListener('dragstart', (e) => {
             const block = e.target.closest('.bb-block');
             if (!block) return;
+            if (block.classList.contains('bb-block--root')) return;
             dragType = block.dataset.type;
             e.dataTransfer.effectAllowed = 'move';
         });
         el.builderWorkspace.addEventListener('dragover', (e) => {
-            if (dragType) e.preventDefault();
+            e.preventDefault();
         });
         el.builderWorkspace.addEventListener('drop', (e) => {
             e.preventDefault();
+            const files = e.dataTransfer && e.dataTransfer.files;
+            if (files && files.length) {
+                if (/\.xml$/i.test(files[0].name)) loadStrategyFile(files[0]);
+                else toast('Drop a saved .xml strategy file here.', 'warn');
+                dragType = null;
+                return;
+            }
             if (!dragType) return;
             const target = e.target.closest('.bb-block');
             const blocks = state.bot.blocks.slice();
@@ -1375,6 +1560,7 @@
             trigger: trigger,
             intervalMs: triggerInterval(trigger),
             once: trigger === 'once',
+            market: hasTrade && el.boMarket ? el.boMarket.value : '',
             symbol: hasTrade && el.boUnderlying ? el.boUnderlying.value : 'R_100',
             contractType: hasTrade && el.boType ? el.boType.value : 'CALL',
             duration: hasTrade && el.boDuration ? (Number(el.boDuration.value) || 1) : 1,
@@ -1710,6 +1896,14 @@
         el.builderClose.addEventListener('click', closeModals);
         el.builderRun.addEventListener('click', toggleBot);
         el.builderReset.addEventListener('click', resetBotWorkspace);
+        el.builderSave.addEventListener('click', saveStrategy);
+        el.builderImport.addEventListener('click', () => el.builderImportFile.click());
+        el.builderImportFile.addEventListener('change', () => {
+            if (el.builderImportFile.files && el.builderImportFile.files[0]) {
+                loadStrategyFile(el.builderImportFile.files[0]);
+            }
+            el.builderImportFile.value = '';
+        });
         el.paletteSearch.addEventListener('input', () => renderPalette(el.paletteSearch.value));
         $$('#bot-builder [data-tab]').forEach((tab) => {
             tab.addEventListener('click', () => switchBuilderTab(tab.dataset.tab));
