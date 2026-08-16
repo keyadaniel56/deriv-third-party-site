@@ -33,6 +33,22 @@ window.SITE_CONFIG = {
     oauthAuthUrl: 'https://auth.deriv.com/oauth2/auth',
     oauthTokenUrl: 'https://auth.deriv.com/oauth2/token',
 
+    /* OAuth sign-up (see https://developers.deriv.com/llms/oauth.md#sign-up).
+     * Leave `oauthPrompt` empty to only offer sign-in; set it to 'registration'
+     * to open Deriv's sign-up form instead of the login form. */
+    oauthPrompt: '',
+
+    /* Optional Deriv partner attribution — sent on the OAuth authorization URL
+     * (sidc + utm_* params, or `affiliate_token`). Grab these values from your
+     * referral link in the Deriv Partners dashboard. Empty values are skipped. */
+    partner: {
+        sidc: '',              // e.g. 'FB58247C-6B33-4677-A6AD-168C2D72323C'
+        affiliateToken: '',    // alternative to sidc, e.g. 'CU00001'
+        utm_source: '',        // your affiliate id
+        utm_medium: 'affiliate',
+        utm_campaign: '',
+    },
+
     /* Brand / theme tokens (also used by the in-page SEO bootstrap). */
     primaryColor: '#062E78',
     secondaryColor: '#020B24',

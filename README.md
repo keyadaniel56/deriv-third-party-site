@@ -67,6 +67,25 @@ supports both sign-in methods.
    - Scope requested: `trade`.
 4. That's it for users — they click **Connect with Deriv**, authenticate on Deriv, and return authenticated.
 
+### Sign-up and partner attribution (optional)
+
+Per the [OAuth 2.0 reference](https://developers.deriv.com/llms/oauth.md#sign-up), the same authorization URL can open
+Deriv's **sign-up form** instead of login by appending `prompt=registration`:
+
+- The **"Create a free Deriv account"** button in the connect modal calls `startOAuth({ prompt: 'registration' })`.
+- To tag new sign-ups to your affiliate account, fill in `partner` in `js/config.js` (session GUID `sidc`, or
+  `affiliate_token`, plus `utm_source` / `utm_medium` / `utm_campaign`). These are appended to the authorization URL;
+  empty values are skipped.
+- Set `oauthPrompt: 'registration'` in `js/config.js` to make the default sign-in button open the sign-up form.
+
+### Notes / deviations from the reference docs
+
+- The OAuth **token exchange** runs client-side (form-encoded POST to `auth.deriv.com/oauth2/token`, which answers
+  with `Access-Control-Allow-Origin`). The docs recommend a backend exchange for production; on a static site the
+  client-side flow is used for simplicity.
+- This site targets the **new Deriv API** (`developers.deriv.com`, `auth.deriv.com`). The legacy API used
+  `oauth.deriv.com/oauth2/authorize?app_id=…` with per-account `token` parameters — that flow is not used here.
+
 ---
 
 ## 2. Files

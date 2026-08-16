@@ -69,6 +69,7 @@
         connectModal: $('#connect-modal'),
         connectClose: $('#connect-close'),
         oauthBtn: $('#oauth-btn'),
+        oauthSignupBtn: $('#oauth-signup-btn'),
         tokenInput: $('#token-input'),
         tokenApplyBtn: $('#token-apply-btn'),
         connectStatus: $('#connect-status'),
@@ -748,7 +749,7 @@
         return cfg('oauthRedirectUri', '') || window.location.origin + window.location.pathname;
     }
 
-    function oauthLoginUrl(pkce) {
+    function oauthLoginUrl(pkce, opts) {
         const params = new URLSearchParams({
             response_type: 'code',
             client_id: cfg('oauth2ClientId', ''),
@@ -758,10 +759,20 @@
             code_challenge: pkce.codeChallenge,
             code_challenge_method: 'S256',
         });
+        const prompt = (opts && opts.prompt) || cfg('oauthPrompt', '');
+        if (prompt) params.set('prompt', prompt);
+        const p = cfg('partner', null);
+        if (p && typeof p === 'object') {
+            if (p.sidc) params.set('sidc', p.sidc);
+            if (p.affiliateToken) params.set('affiliate_token', p.affiliateToken);
+            if (p.utm_source) params.set('utm_source', p.utm_source);
+            if (p.utm_medium) params.set('utm_medium', p.utm_medium);
+            if (p.utm_campaign) params.set('utm_campaign', p.utm_campaign);
+        }
         return cfg('oauthAuthUrl', 'https://auth.deriv.com/oauth2/auth') + '?' + params.toString();
     }
 
-    async function startOAuth() {
+    async function startOAuth(opts) {
         if (!cfg('oauth2ClientId', '')) {
             toast('OAuth is not configured. Set oauth2ClientId in js/config.js or use an API token.', 'error');
             openModal(el.connectModal);
@@ -773,7 +784,7 @@
                 sessionStorage.setItem('oauth_verifier', pkce.codeVerifier);
                 sessionStorage.setItem('oauth_state', pkce.state);
             } catch (e) { /* noop */ }
-            window.location.href = oauthLoginUrl(pkce);
+            window.location.href = oauthLoginUrl(pkce, opts);
         } catch (e) {
             toast('Could not start OAuth sign-in.', 'error');
         }
@@ -1825,7 +1836,8 @@
     function wireEvents() {
         el.navConnect.addEventListener('click', startOAuth);
         el.connectClose.addEventListener('click', closeModals);
-        el.oauthBtn.addEventListener('click', startOAuth);
+        el.oauthBtn.addEventListener('click', () => startOAuth({ prompt: '' }));
+        el.oauthSignupBtn.addEventListener('click', () => startOAuth({ prompt: 'registration' }));
         el.tokenApplyBtn.addEventListener('click', () => applyToken(el.tokenInput.value.trim()));
         el.tradeConnectBtn.addEventListener('click', startOAuth);
         el.tradeTokenBtn.addEventListener('click', () => openModal(el.connectModal));
