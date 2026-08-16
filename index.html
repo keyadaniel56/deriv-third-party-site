@@ -674,6 +674,18 @@
 
         <script src="/js/config.js"></script>
         <script src="/js/deriv.js"></script>
+
+        <!-- Blockly (v9) — loaded before bot bundles so window.Blockly is available -->
+        <script src="https://unpkg.com/blockly@9.3.3/blockly_compressed.js"></script>
+        <script src="https://unpkg.com/blockly@9.3.3/blocks_compressed.js"></script>
+        <script src="https://unpkg.com/blockly@9.3.3/javascript_compressed.js"></script>
+        <script src="https://unpkg.com/blockly@9.3.3/msg/en.js"></script>
+
+        <!-- Deriv Bot trade engine + block definitions (built by esbuild) -->
+        <script src="/bot-bundle/bot-engine.js"></script>
+        <script src="/bot-bundle/bot-blocks.js"></script>
+        <script src="/js/bot-workspace.js"></script>
+
         <script src="/js/app.js"></script>
     </body>
 </html>

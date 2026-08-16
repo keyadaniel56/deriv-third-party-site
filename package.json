@@ -1,0 +1,31 @@
+{
+  "name": "deriv-third-party-site",
+  "version": "1.0.0",
+  "description": "A third-party Deriv trading site, styled after [tradersunit.com](https://www.tradersunit.com/), built with the official **Deriv API** (new API at [developers.deriv.com](https://developers.deriv.com)). It streams live market data, powers an AI-style market scanner, provides charting, manual trading (live proposal pricing + buy), and free bot strategy templates.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keyadaniel56/deriv-third-party-site.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/keyadaniel56/deriv-third-party-site/issues"
+  },
+  "homepage": "https://github.com/keyadaniel56/deriv-third-party-site#readme",
+  "devDependencies": {
+    "esbuild": "^0.28.2"
+  },
+  "dependencies": {
+    "@deriv/js-interpreter": "^3.0.0",
+    "immutable": "^5.1.9",
+    "lodash.debounce": "^4.0.8",
+    "redux": "^5.0.1",
+    "redux-thunk": "^3.1.0"
+  }
+}
