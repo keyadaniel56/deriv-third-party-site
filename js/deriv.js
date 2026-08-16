@@ -183,6 +183,10 @@
             return this.send(Object.assign({ proposal: 1, subscribe: 1 }, params), 20000);
         }
 
+        getProposal(params) {
+            return this.send(Object.assign({ proposal: 1 }, params), 20000);
+        }
+
         forget(subscriptionId) {
             return this.send({ forget: subscriptionId });
         }

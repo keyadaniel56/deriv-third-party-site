@@ -119,14 +119,18 @@ Deploy to any static host (Netlify, Vercel, GitHub Pages, your own nginx, etc.).
   hours) on the public channel, then `buy` via the authenticated channel against the user's connected Deriv account.
 - **Connect with Deriv** — redirects to Deriv's OAuth 2.0 sign-in (PKCE) and, on return, resolves the user's
   account and balance via the REST accounts + OTP flow. Manual API-token paste is supported as a fallback.
-- **Free bot strategies** — DBot-compatible strategy templates (no code runs them on this site; import into
-  [Deriv Bot](https://bot.deriv.com)).
+- **Bot Builder (DBot-style)** — an in-site builder that looks like Deriv Bot: a block palette on the left, a
+  connected block workspace in the centre and a run-settings panel on the right. Preset strategies load into the
+  workspace, and **Run** trades them live on the connected account (proposal → buy → settlement via balance
+  checks), stopping on max trades / profit target / loss limit. Rise/Fall and Digit (Even/Odd) contracts are
+  supported; Boom/Crash indices only offer Multipliers/Accumulators on the new API, so they are blocked with an
+  explanatory note. Strategies can also be opened directly in [Deriv Bot](https://bot.deriv.com).
 
 ## 6. Extending
 
 - Add more markets: expand `scannerSymbols` in `js/config.js` (any symbol from `active_symbols` works).
 - Add calls: see `DerivClient` in `js/deriv.js` (`getActiveSymbols`, `getTicksHistory`, `subscribeTicks`,
-  `subscribeProposal`, `getAccounts`, `getOtp`, `connectAuthenticated`, `buy`, `getBalance`).
+  `subscribeProposal`, `getProposal`, `getAccounts`, `getOtp`, `connectAuthenticated`, `buy`, `getBalance`).
 - Reference: <https://developers.deriv.com/docs/options/> and
   <https://developers.deriv.com/docs/options/get-accounts/>.
 

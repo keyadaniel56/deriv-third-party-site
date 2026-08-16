@@ -15,6 +15,7 @@
     const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
     const fmt = (n, d) => (n === null || n === undefined || isNaN(n) ? '—' : Number(n).toFixed(d === undefined ? 2 : d));
     const fmtPct = (n) => (n === null || n === undefined || isNaN(n) ? '' : (n >= 0 ? '+' : '') + n.toFixed(2) + '%');
+    const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
     const el = {
         loader: $('#app-loader'),
@@ -72,10 +73,22 @@
         tokenApplyBtn: $('#token-apply-btn'),
         connectStatus: $('#connect-status'),
 
-        botModal: $('#bot-modal'),
-        botModalTitle: $('#bot-modal-title'),
-        botModalContent: $('#bot-modal-content'),
-        botModalClose: $('#bot-modal-close'),
+        botBuilder: $('#bot-builder'),
+        builderTitle: $('#builder-title'),
+        builderRun: $('#builder-run'),
+        builderClose: $('#builder-close'),
+        builderConn: $('#builder-conn'),
+        builderWorkspace: $('#builder-workspace'),
+        builderMarket: $('#builder-market'),
+        builderType: $('#builder-type'),
+        builderDuration: $('#builder-duration'),
+        builderUnit: $('#builder-unit'),
+        builderStake: $('#builder-stake'),
+        builderMaxTrades: $('#builder-maxtrades'),
+        builderTarget: $('#builder-target'),
+        builderLossLimit: $('#builder-losslimit'),
+        builderLog: $('#builder-log'),
+        builderLogStatus: $('#builder-log-status'),
 
         toastRoot: $('#toast-root'),
         footerYear: $('#footer-year'),
@@ -100,6 +113,7 @@
                 ['Profit target', '10 trades / 15%'],
                 ['Loss limit', '5 consecutive losses'],
             ],
+            preset: { symbol: 'R_75', type: 'CALL', duration: 1, unit: 'm', stake: 10, maxTrades: 10, target: 3, lossLimit: 3 },
         },
         boom: {
             title: 'Boom & Crash Breakout',
@@ -119,6 +133,7 @@
                 ['Detection', '5-candle range'],
                 ['Session limit', '3 consecutive wins'],
             ],
+            preset: { symbol: 'R_50', type: 'CALL', duration: 1, unit: 'm', stake: 10, maxTrades: 10, target: 3, lossLimit: 3 },
         },
         digit: {
             title: 'Digit Even/Odd',
@@ -137,6 +152,7 @@
                 ['Stake', '0.50 USD – 100 USD'],
                 ['Modes', 'Single & multi-tick'],
             ],
+            preset: { symbol: 'R_100', type: 'DIGITEVEN', duration: 1, unit: 't', stake: 5, maxTrades: 15, target: 5, lossLimit: 3 },
         },
         runner: {
             title: 'Rise/Fall Runner',
@@ -155,6 +171,7 @@
                 ['Stake', '1 USD default'],
                 ['Validation', '10 trades'],
             ],
+            preset: { symbol: '1HZ100V', type: 'CALL', duration: 1, unit: 'm', stake: 1, maxTrades: 10, target: 3, lossLimit: 3 },
         },
     };
 
@@ -179,6 +196,8 @@
         account: null,
         symbolsLoaded: false,
         loaderHidden: false,
+        bot: null,
+        botRunning: false,
     };
 
     const upColor = cfg('upColor', '#2BB673');
@@ -398,7 +417,7 @@
                     opt.textContent = s.name;
                     return opt;
                 });
-                [el.symbolSelect, el.tradeSymbol].forEach((sel) => {
+                [el.symbolSelect, el.tradeSymbol, el.builderMarket].forEach((sel) => {
                     if (!sel) return;
                     sel.innerHTML = '';
                     opts.forEach((o) => sel.appendChild(o.cloneNode(true)));
@@ -864,6 +883,7 @@
 
     function closeModals() {
         $$('.modal.is-open').forEach((m) => {
+            if (state.botRunning && m === el.botBuilder) stopBot();
             m.classList.remove('is-open');
             setTimeout(() => { m.hidden = true; }, 200);
         });
@@ -871,22 +891,288 @@
     }
 
     /* =========================================================
-     * Bot modal
+     * Bot builder (DBot-style)
      * ========================================================= */
-    function openBotModal(key) {
+    const BLOCK_DEFS = {
+        'every-tick': { cls: '--trigger', title: 'Every tick', meta: () => 'Start a new trade on every tick until stopped' },
+        'once': { cls: '--trigger', title: 'Once', meta: () => 'Run a single trade then stop' },
+        'trade-options': {
+            cls: '--trade',
+            title: 'Trade options',
+            meta: (s) => s.symbol + ' · ' + s.type + ' · ' + s.duration + (s.unit === 'm' ? 'm' : 't') + ' · stake ' + fmt(s.stake, 2),
+        },
+        'buy-contract': { cls: '--market', title: 'Buy contract', meta: () => 'Purchase the contract at the live ask price' },
+        'if-win': { cls: '--logic', title: 'If win', meta: (s) => 'Stop after ' + (s.target || 0) + ' wins (profit target)' },
+        'if-loss': { cls: '--logic', title: 'If loss', meta: (s) => 'Stop after ' + (s.lossLimit || 0) + ' consecutive losses' },
+        'repeat': { cls: '--logic', title: 'Repeat while balance > target', meta: () => 'Keep trading until a limit is reached' },
+        'pause': { cls: '--danger', title: 'Pause between trades', meta: () => 'Wait 5 seconds between trades' },
+    };
+
+    function builderFlags(blocks) {
+        return {
+            ifWin: blocks.indexOf('if-win') !== -1,
+            ifLoss: blocks.indexOf('if-loss') !== -1,
+            pause: blocks.indexOf('pause') !== -1,
+        };
+    }
+
+    function openBotBuilder(key) {
         const cfgObj = BOT_CONFIGS[key];
-        if (!cfgObj) return;
-        el.botModalTitle.textContent = cfgObj.title;
-        el.botModalContent.innerHTML =
-            '<p class="section__muted">' + cfgObj.summary + '</p>' +
-            '<h4 class="bot-config__head">Strategy steps</h4>' +
-            '<ol class="bot-config__steps">' + cfgObj.steps.map((s) => '<li>' + s + '</li>').join('') + '</ol>' +
-            '<h4 class="bot-config__head">Parameters</h4>' +
-            '<table class="bot-config__table">' +
-            cfgObj.params.map((p) => '<tr><td>' + p[0] + '</td><td>' + p[1] + '</td></tr>').join('') +
-            '</table>' +
-            '<p class="section__muted">Import this strategy into Deriv Bot (DBot) at <a href="https://bot.deriv.com" target="_blank" rel="noopener">bot.deriv.com</a>.</p>';
-        openModal(el.botModal);
+        if (!cfgObj || !cfgObj.preset) return;
+        const pre = cfgObj.preset;
+        state.bot = {
+            key: key,
+            title: cfgObj.title,
+            blocks: ['every-tick', 'trade-options', 'buy-contract', 'if-loss'],
+        };
+        el.builderTitle.textContent = cfgObj.title;
+        el.builderMarket.value = pre.symbol;
+        el.builderType.value = pre.type;
+        el.builderDuration.value = pre.duration;
+        el.builderUnit.value = pre.unit;
+        el.builderStake.value = pre.stake;
+        el.builderMaxTrades.value = pre.maxTrades;
+        el.builderTarget.value = pre.target;
+        el.builderLossLimit.value = pre.lossLimit;
+        renderWorkspace();
+        botLog('Strategy "' + cfgObj.title + '" loaded into the builder.', 'info');
+        updateBuilderConn();
+        openModal(el.botBuilder);
+    }
+
+    function addBuilderBlock(type) {
+        if (!state.bot) return;
+        if (type === 'every-tick' || type === 'once') {
+            state.bot.blocks = state.bot.blocks.filter((b) => b !== 'every-tick' && b !== 'once');
+        }
+        if (state.bot.blocks.length >= 8) {
+            toast('Workspace is full — remove a block first.', 'warn');
+            return;
+        }
+        state.bot.blocks.push(type);
+        renderWorkspace();
+    }
+
+    function removeBuilderBlock(i) {
+        if (!state.bot) return;
+        state.bot.blocks.splice(i, 1);
+        renderWorkspace();
+    }
+
+    function renderWorkspace() {
+        const ws = el.builderWorkspace;
+        if (!state.bot || !state.bot.blocks.length) {
+            ws.innerHTML = '<p class="ws__empty">Add blocks from the left panel to build your strategy.</p>';
+            return;
+        }
+        const settings = readBotSettings();
+        ws.innerHTML = '';
+        state.bot.blocks.forEach((type, i) => {
+            const def = BLOCK_DEFS[type];
+            if (!def) return;
+            const block = document.createElement('div');
+            block.className = 'ws__block ws__block' + def.cls;
+            block.innerHTML =
+                '<div class="ws__block-title">' + def.title + '</div>' +
+                '<div class="ws__block-meta">' + def.meta(settings) + '</div>' +
+                '<button type="button" class="ws__block-del" data-i="' + i + '" aria-label="Remove block">&times;</button>';
+            ws.appendChild(block);
+            if (i < state.bot.blocks.length - 1) {
+                const conn = document.createElement('div');
+                conn.className = 'ws__connector';
+                ws.appendChild(conn);
+            }
+        });
+    }
+
+    function readBotSettings() {
+        return {
+            symbol: el.builderMarket.value,
+            type: el.builderType.value,
+            duration: Math.max(1, Number(el.builderDuration.value) || 1),
+            unit: el.builderUnit.value,
+            stake: Math.max(0.5, Number(el.builderStake.value) || 1),
+            maxTrades: Math.max(1, Number(el.builderMaxTrades.value) || 1),
+            target: Math.max(0, Number(el.builderTarget.value) || 0),
+            lossLimit: Math.max(0, Number(el.builderLossLimit.value) || 0),
+            currency: (state.account && state.account.currency) || 'USD',
+        };
+    }
+
+    function botProposalParams(settings) {
+        return {
+            amount: Number(settings.stake) || 1,
+            basis: 'stake',
+            contract_type: settings.type,
+            currency: settings.currency,
+            duration: Number(settings.duration) || 1,
+            duration_unit: settings.unit,
+            underlying_symbol: settings.symbol,
+        };
+    }
+
+    function botLog(msg, kind) {
+        if (!el.builderLog) return;
+        const line = document.createElement('div');
+        line.className = 'builder__logline builder__logline--' + (kind || 'info');
+        line.textContent = '[' + new Date().toLocaleTimeString() + '] ' + msg;
+        el.builderLog.appendChild(line);
+        el.builderLog.scrollTop = el.builderLog.scrollHeight;
+    }
+
+    function updateBuilderConn() {
+        if (!el.builderConn) return;
+        if (state.botRunning) {
+            const n = state.botStats ? state.botStats.trades : 0;
+            el.builderConn.textContent = 'Running — ' + n + ' trade' + (n === 1 ? '' : 's');
+            el.builderConn.className = 'builder__conn builder__conn--run';
+        } else if (state.account) {
+            el.builderConn.textContent = 'Connected · ' + state.account.loginid;
+            el.builderConn.className = 'builder__conn builder__conn--ok';
+        } else {
+            el.builderConn.textContent = 'Not connected';
+            el.builderConn.className = 'builder__conn';
+        }
+    }
+
+    function toggleBot() {
+        if (state.botRunning) stopBot();
+        else startBot();
+    }
+
+    function stopBot() {
+        state.botRunning = false;
+        botLog('Stopping after the current trade settles…', 'warn');
+        updateBuilderConn();
+    }
+
+    async function startBot() {
+        if (!state.client) return;
+        if (!state.account) {
+            toast('Connect your Deriv account to run the bot.', 'error');
+            return;
+        }
+        const settings = readBotSettings();
+        if (!settings.symbol) {
+            toast('Choose a market first.', 'error');
+            return;
+        }
+        if (/^(BOOM|CRASH)/i.test(settings.symbol)) {
+            botLog('Note: Boom/Crash indices only offer Multipliers and Accumulators in the new Deriv API — Rise/Fall/Digit contracts are not available on them. Pick a Volatility index (e.g. R_50/R_75).', 'warn');
+            state.botRunning = false;
+            return;
+        }
+        state.botRunning = true;
+        state.botStats = { trades: 0, wins: 0, losses: 0, streak: 0 };
+        el.builderRun.textContent = 'Stop';
+        el.builderRun.classList.add('btn--danger');
+        botLog(
+            'Bot started on ' + settings.symbol + ' · ' + settings.type +
+            ' · ' + settings.duration + (settings.unit === 'm' ? 'm' : 't') +
+            ' · stake ' + fmt(settings.stake, 2) + ' ' + settings.currency,
+            'ok'
+        );
+
+        const flags = builderFlags(state.bot.blocks);
+        while (state.botRunning) {
+            const s = state.botStats;
+            if (s.trades >= settings.maxTrades) {
+                botLog('Max trades reached (' + settings.maxTrades + '). Stopping.', 'warn');
+                break;
+            }
+            if (flags.ifWin && settings.target > 0 && s.wins >= settings.target) {
+                botLog('Profit target reached (' + s.wins + ' wins). Stopping.', 'ok');
+                break;
+            }
+            if (flags.ifLoss && settings.lossLimit > 0 && s.streak >= settings.lossLimit) {
+                botLog('Loss limit reached (' + s.streak + ' consecutive losses). Stopping.', 'warn');
+                break;
+            }
+
+            let proposal;
+            try {
+                proposal = await state.client.getProposal(botProposalParams(settings));
+            } catch (err) {
+                botLog('Proposal failed: ' + err.message, 'error');
+                break;
+            }
+            if (!state.botRunning) break;
+            const p = proposal && proposal.proposal;
+            if (!p || !p.id) {
+                botLog('No proposal received for ' + settings.symbol + '.', 'error');
+                break;
+            }
+
+            let receipt;
+            try {
+                receipt = await state.client.buy(p.id, p.ask_price);
+            } catch (err) {
+                botLog('Buy failed: ' + err.message, 'error');
+                break;
+            }
+            if (!state.botRunning) break;
+            s.trades += 1;
+            const b = receipt.buy;
+            const currency = (state.account && state.account.currency) || settings.currency;
+            botLog(
+                '#' + s.trades + ' bought contract ' + b.contract_id +
+                ' for ' + fmt(b.buy_price, 2) + ' ' + currency +
+                ' — potential payout ' + fmt(b.payout, 2) + ' ' + currency,
+                'info'
+            );
+            updateBuilderConn();
+
+            const result = await waitSettlement(b.balance_after, settings);
+            if (!state.botRunning) break;
+            if (result.profit >= 0.005) {
+                s.wins += 1;
+                s.streak = 0;
+                botLog('#' + s.trades + ' WIN +' + fmt(result.profit, 2) + ' ' + currency, 'ok');
+            } else {
+                s.losses += 1;
+                s.streak += 1;
+                botLog('#' + s.trades + ' loss (' + fmt(result.profit, 2) + ' ' + currency + ')', 'err');
+            }
+            updateBuilderConn();
+
+            if (flags.pause) {
+                botLog('Pausing 5s before the next trade…', 'info');
+                await sleep(5000);
+            }
+        }
+
+        state.botRunning = false;
+        el.builderRun.textContent = 'Run';
+        el.builderRun.classList.remove('btn--danger');
+        botLog(
+            'Bot stopped — ' + state.botStats.trades + ' trade' + (state.botStats.trades === 1 ? '' : 's') +
+            ', ' + state.botStats.wins + ' win' + (state.botStats.wins === 1 ? '' : 's') +
+            ', ' + state.botStats.losses + ' loss' + (state.botStats.losses === 1 ? '' : 'es') + '.',
+            'info'
+        );
+        updateBuilderConn();
+    }
+
+    async function waitSettlement(balanceAfterBuy, settings) {
+        const unitMs = settings.unit === 'm' ? 60000 : 2000;
+        const maxWait = Math.max(12000, settings.duration * unitMs + 30000);
+        const started = Date.now();
+        let profit = 0;
+        while (state.botRunning && Date.now() - started < maxWait) {
+            await sleep(2500);
+            let bal;
+            try {
+                bal = await state.client.getBalance();
+            } catch (e) {
+                continue;
+            }
+            const cur = bal && bal.balance ? bal.balance.balance : null;
+            if (cur !== null && Math.abs(cur - balanceAfterBuy) > 0.001) {
+                profit = cur - balanceAfterBuy;
+                break;
+            }
+        }
+        return { profit: profit };
     }
 
     /* =========================================================
@@ -960,9 +1246,25 @@
         el.buyBtn.addEventListener('click', buy);
 
         $$('[data-bot]').forEach((btn) => {
-            btn.addEventListener('click', () => openBotModal(btn.dataset.bot));
+            btn.addEventListener('click', () => openBotBuilder(btn.dataset.bot));
         });
-        el.botModalClose.addEventListener('click', closeModals);
+
+        el.builderClose.addEventListener('click', closeModals);
+        el.builderRun.addEventListener('click', toggleBot);
+        $$('#bot-builder [data-block]').forEach((b) => {
+            b.addEventListener('click', () => addBuilderBlock(b.dataset.block));
+        });
+        el.builderWorkspace.addEventListener('click', (e) => {
+            const del = e.target.closest('.ws__block-del');
+            if (del) removeBuilderBlock(Number(del.dataset.i));
+        });
+        [
+            el.builderMarket, el.builderType, el.builderDuration,
+            el.builderUnit, el.builderStake, el.builderMaxTrades,
+            el.builderTarget, el.builderLossLimit,
+        ].forEach((inp) => {
+            if (inp) inp.addEventListener('change', renderWorkspace);
+        });
 
         el.navMenu.addEventListener('click', () => {
             const links = $('.nav__links');
