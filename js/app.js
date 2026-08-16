@@ -909,8 +909,18 @@
      * ========================================================= */
     function openModal(modal) {
         if (!modal) return;
+        modal.hidden = false;
         document.body.classList.add('modal-open');
         setTimeout(() => modal.classList.add('is-open'), 10);
+    }
+
+    function closeModals() {
+        $$('.modal.is-open').forEach((m) => {
+            if (state.botRunning && m === el.botBuilder) stopBot();
+            m.classList.remove('is-open');
+            setTimeout(() => { m.hidden = true; }, 200);
+        });
+        document.body.classList.remove('modal-open');
     }
 
     /* =========================================================
