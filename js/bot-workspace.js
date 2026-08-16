@@ -1,5 +1,6 @@
 /* =========================================================================
  * BotWorkspace — wraps Blockly workspace + trade engine interpreter.
+ * Toolbox XML is fetched first, then passed to Blockly.inject at creation.
  * Requires: window.Blockly (CDN), bot-blocks.js, bot-engine.js
  * ========================================================================= */
 var BotWorkspace = (function () {
@@ -9,6 +10,7 @@ var BotWorkspace = (function () {
     let interpreter = null;
     let isRunning = false;
     let symbol = 'R_100';
+    let toolboxDom = null;
 
     function init(containerId) {
         const container = document.getElementById(containerId);
@@ -16,13 +18,19 @@ var BotWorkspace = (function () {
 
         container.innerHTML = '';
 
+        const injectOpts = {
+            renderer: 'zelos',
+            trashcan: true,
+            zoom: { wheel: true, startScale: 0.82 },
+            scrollbars: true,
+        };
+
+        if (toolboxDom) {
+            injectOpts.toolbox = toolboxDom;
+        }
+
         try {
-            workspace = window.Blockly.inject(container, {
-                renderer: 'zelos',
-                trashcan: true,
-                zoom: { wheel: true, startScale: 0.82 },
-                scrollbars: true,
-            });
+            workspace = window.Blockly.inject(container, injectOpts);
         } catch (e) {
             console.error('Blockly.inject failed:', e);
             return false;
@@ -31,10 +39,19 @@ var BotWorkspace = (function () {
         return true;
     }
 
+    function loadToolbox(xmlText) {
+        try {
+            toolboxDom = window.Blockly.Xml.textToDom(xmlText);
+        } catch (e) {
+            console.warn('Could not parse toolbox XML:', e);
+            toolboxDom = null;
+        }
+    }
+
     function loadXml(xmlText) {
         if (!workspace || !xmlText) return false;
         try {
-            const dom = window.Blockly.utils.xml.textToDom(xmlText);
+            const dom = window.Blockly.Xml.textToDom(xmlText);
             window.Blockly.Xml.clearWorkspaceAndLoadFromXml(dom, workspace);
             return true;
         } catch (e) {
@@ -181,11 +198,32 @@ var BotWorkspace = (function () {
         if (workspace) window.Blockly.svgResize(workspace);
     }
 
+    function undo() {
+        if (workspace) workspace.undo(false);
+    }
+
+    function redo() {
+        if (workspace) workspace.undo(true);
+    }
+
+    function zoomIn() {
+        if (workspace) {
+            workspace.zoom(workspace.options.zoomControlsPosition === 'start' ? -1 : 1);
+        }
+    }
+
+    function zoomOut() {
+        if (workspace) {
+            workspace.zoom(workspace.options.zoomControlsPosition === 'start' ? 1 : -1);
+        }
+    }
+
     function getWorkspace() { return workspace; }
     function getRunning() { return isRunning; }
 
     return {
         init: init,
+        loadToolbox: loadToolbox,
         loadXml: loadXml,
         getXml: getXml,
         generateCode: generateCode,
@@ -194,6 +232,10 @@ var BotWorkspace = (function () {
         stopBot: stopBot,
         clear: clear,
         resize: resize,
+        undo: undo,
+        redo: redo,
+        zoomIn: zoomIn,
+        zoomOut: zoomOut,
         getWorkspace: getWorkspace,
         getRunning: getRunning,
     };

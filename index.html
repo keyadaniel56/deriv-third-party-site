@@ -514,14 +514,8 @@
                     <div class="builder__brand">
                         <span class="builder__logo">T</span>
                         <span class="builder__brand-name">TradersUnit <span>Bot Builder</span></span>
-                        <span class="builder__workspace" id="builder-workspace-name">untitled workspace</span>
                     </div>
                     <div class="builder__topbar-actions">
-                        <button id="builder-save" class="builder__tool-btn" type="button" title="Save strategy as an XML file">Save</button>
-                        <button id="builder-import" class="builder__tool-btn" type="button" title="Import an XML strategy">Import</button>
-                        <button id="builder-reset" class="builder__icon-btn" type="button" title="Reset workspace">&#8634;</button>
-                        <input id="builder-import-file" type="file" accept=".xml" hidden />
-                        <a class="builder__open-dbot" href="https://bot.deriv.com" target="_blank" rel="noopener" title="Open in Deriv Bot">Open in Deriv Bot</a>
                         <span id="builder-conn" class="builder__conn">Not connected</span>
                         <button id="builder-run" class="builder__run" type="button">
                             <span id="builder-run-label">Run</span>
@@ -531,18 +525,28 @@
                 </header>
 
                 <div class="builder__main">
-                    <aside class="builder__palette">
-                        <div class="builder__palette-head">
-                            <h4>Strategy blocks</h4>
-                            <input id="palette-search" class="builder__search" type="search" placeholder="Search blocks" autocomplete="off" />
+                    <!-- DBot-style top toolbar -->
+                    <div class="toolbar" id="db-toolbar">
+                        <div class="toolbar__group toolbar__group-btn">
+                            <button class="toolbar__icon-btn" id="db-toolbar__reset-button" title="Reset workspace">&#8634;</button>
+                            <button class="toolbar__icon-btn" id="db-toolbar__import-button" title="Import XML strategy">&#128194;</button>
+                            <button class="toolbar__icon-btn" id="db-toolbar__save-button" title="Save strategy">&#128190;</button>
+                            <input id="builder-import-file" type="file" accept=".xml" hidden />
+                            <div class="vertical-divider"></div>
+                            <button class="toolbar__icon-btn" id="db-toolbar__undo-button" title="Undo">&#8617;</button>
+                            <button class="toolbar__icon-btn" id="db-toolbar__redo-button" title="Redo">&#8618;</button>
+                            <div class="vertical-divider"></div>
+                            <button class="toolbar__icon-btn" id="db-toolbar__zoom-in-button" title="Zoom in">+</button>
+                            <button class="toolbar__icon-btn" id="db-toolbar__zoom-out-button" title="Zoom out">&minus;</button>
                         </div>
-                        <div id="palette-cats" class="builder__cats"></div>
-                    </aside>
-
-                    <div class="builder__canvas">
-                        <div id="builder-workspace" class="ws"></div>
                     </div>
 
+                    <!-- Blockly workspace (Blockly renders its native toolbox inside here) -->
+                    <div class="builder__canvas">
+                        <div id="builder-workspace"></div>
+                    </div>
+
+                    <!-- Right run panel -->
                     <aside class="builder__runpanel">
                         <div class="builder__tabs">
                             <button type="button" class="is-active" data-tab="run">Run status</button>

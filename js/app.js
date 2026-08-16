@@ -75,11 +75,14 @@
         connectStatus: $('#connect-status'),
 
         botBuilder: $('#bot-builder'),
-        builderWorkspaceName: $('#builder-workspace-name'),
-        builderReset: $('#builder-reset'),
-        builderSave: $('#builder-save'),
-        builderImport: $('#builder-import'),
+        builderReset: $('#db-toolbar__reset-button'),
+        builderImport: $('#db-toolbar__import-button'),
+        builderSave: $('#db-toolbar__save-button'),
         builderImportFile: $('#builder-import-file'),
+        builderUndo: $('#db-toolbar__undo-button'),
+        builderRedo: $('#db-toolbar__redo-button'),
+        builderZoomIn: $('#db-toolbar__zoom-in-button'),
+        builderZoomOut: $('#db-toolbar__zoom-out-button'),
         builderRun: $('#builder-run'),
         builderRunLabel: $('#builder-run-label'),
         builderClose: $('#builder-close'),
@@ -857,38 +860,40 @@
     }
 
     function openBotBuilder() {
-        initBlocklyWorkspace();
-        if (window.BotWorkspace) window.BotWorkspace.clear();
+        if (!window.BotWorkspace || !window.Blockly) {
+            toast('Blockly is still loading — try again in a moment.', 'warn');
+            return;
+        }
 
-        fetch('/bot-bundle/main.xml')
+        fetch('/bot-bundle/toolbox.xml')
             .then(function (r) { return r.text(); })
             .then(function (xml) {
-                if (window.BotWorkspace) window.BotWorkspace.loadXml(xml);
-                botLog('Default strategy loaded into the Blockly workspace.', 'info');
+                window.BotWorkspace.loadToolbox(xml);
+                initBlocklyWorkspace();
+                if (window.BotWorkspace) window.BotWorkspace.clear();
+                updateBuilderConn();
+                setBuilderStatus('Bot ready to run', 'Start the bot to begin automated trading.');
+                openModal(el.botBuilder);
+                setTimeout(function () { if (window.BotWorkspace) window.BotWorkspace.resize(); }, 200);
+                botLog('Toolbox loaded — DBot workspace ready.', 'info');
             })
             .catch(function () {
-                botLog('Could not load default strategy XML.', 'warn');
+                initBlocklyWorkspace();
+                if (window.BotWorkspace) window.BotWorkspace.clear();
+                updateBuilderConn();
+                setBuilderStatus('Bot ready to run', 'Start the bot to begin automated trading.');
+                openModal(el.botBuilder);
+                setTimeout(function () { if (window.BotWorkspace) window.BotWorkspace.resize(); }, 200);
+                botLog('Could not load toolbox XML — workspace opened with default blocks.', 'warn');
             });
-
-        updateBuilderConn();
-        setBuilderStatus('Bot ready to run', 'Start the bot to begin automated trading.');
-        openModal(el.botBuilder);
-        if (window.BotWorkspace) setTimeout(function () { window.BotWorkspace.resize(); }, 200);
     }
 
     function resetBotWorkspace() {
         if (state.botRunning) return;
-        el.builderWorkspaceName.textContent = 'untitled workspace';
         el.builderMaxTrades.value = 20;
         if (el.builderTransactions) el.builderTransactions.innerHTML = '';
         if (el.builderLog) el.builderLog.innerHTML = '';
-        if (window.BotWorkspace) {
-            window.BotWorkspace.clear();
-            fetch('/bot-bundle/main.xml')
-                .then(function (r) { return r.text(); })
-                .then(function (xml) { window.BotWorkspace.loadXml(xml); })
-                .catch(function () {});
-        }
+        if (window.BotWorkspace) window.BotWorkspace.clear();
         botLog('Workspace reset.', 'info');
     }
 
@@ -900,7 +905,7 @@
     function saveStrategy() {
         const xml = serializeStrategy();
         if (!xml) { toast('Nothing to save yet.', 'warn'); return; }
-        const name = (el.builderWorkspaceName.textContent || 'strategy').replace(/[^\w -]+/g, '').trim() || 'strategy';
+        const name = 'strategy';
         const blob = new Blob([xml], { type: 'application/xml' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -1153,6 +1158,10 @@
             }
             el.builderImportFile.value = '';
         });
+        if (el.builderUndo) el.builderUndo.addEventListener('click', () => { if (window.BotWorkspace) window.BotWorkspace.undo(); });
+        if (el.builderRedo) el.builderRedo.addEventListener('click', () => { if (window.BotWorkspace) window.BotWorkspace.redo(); });
+        if (el.builderZoomIn) el.builderZoomIn.addEventListener('click', () => { if (window.BotWorkspace) window.BotWorkspace.zoomIn(); });
+        if (el.builderZoomOut) el.builderZoomOut.addEventListener('click', () => { if (window.BotWorkspace) window.BotWorkspace.zoomOut(); });
         $$('#bot-builder [data-tab]').forEach((tab) => {
             tab.addEventListener('click', () => switchBuilderTab(tab.dataset.tab));
         });

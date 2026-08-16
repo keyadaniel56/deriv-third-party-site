@@ -1604,9 +1604,9 @@ body.modal-open {
  * ========================================================================= */
 
 .modal--builder .modal__dialog {
-    width: min(1280px, 100%);
-    height: 92vh;
-    max-height: 92vh;
+    width: min(1600px, 100%);
+    height: 94vh;
+    max-height: 94vh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -1794,207 +1794,138 @@ body.modal-open {
     cursor: not-allowed;
 }
 
-/* ---- Main grid ---- */
+/* ---- Main grid (DBot-style: toolbar+workspace | runpanel) ---- */
 
 .builder__main {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 280px;
+    grid-template-rows: 5.6rem 1fr;
     min-height: 0;
     flex: 1;
 }
 
-/* ---- Left: Strategy blocks palette ---- */
+/* ---- Toolbar (top, spans workspace column) ---- */
 
-.builder__palette {
-    background: #f7f8fc;
-    border-right: 1px solid #e6e9f2;
+.toolbar {
+    grid-column: 2;
+    grid-row: 1;
     display: flex;
-    flex-direction: column;
-    min-height: 0;
-    overflow: hidden;
-}
-
-.builder__palette-head {
-    padding: 1.3rem 1.4rem 1rem;
-    border-bottom: 1px solid #e6e9f2;
-}
-
-.builder__palette-head h4 {
-    font-size: 1.45rem;
-    font-weight: 700;
-    color: #1b1f2b;
-    margin-bottom: 0.9rem;
-}
-
-.builder__search {
-    width: 100%;
-    border: 1px solid #d8dce8;
-    border-radius: 8px;
-    padding: 0.7rem 1rem;
-    font-size: 1.3rem;
-    color: #1b1f2b;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0 1.2rem;
     background: #fff;
-    outline: none;
-    transition: border-color 0.15s ease;
+    border-bottom: 1px solid #e6e9f2;
+    height: 5.6rem;
+    z-index: 5;
 }
 
-.builder__search:focus {
-    border-color: #6c5ce7;
+.toolbar__group {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
 }
 
-.builder__cats {
-    flex: 1;
-    overflow-y: auto;
-    padding: 0.6rem 0 1.2rem;
-}
-
-.bb-cat {
-    display: block;
-    width: 100%;
-    border: none;
-    background: none;
-    text-align: left;
-    padding: 1.05rem 1.4rem;
-    font-family: inherit;
-    font-size: 1.4rem;
-    font-weight: 600;
-    color: #1b1f2b;
+.toolbar__icon-btn {
+    width: 3.6rem;
+    height: 3.6rem;
+    display: grid;
+    place-items: center;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    background: transparent;
+    color: #4b5563;
+    font-size: 1.8rem;
     cursor: pointer;
-    display: flex;
+    transition: all 0.12s ease;
+}
+
+.toolbar__icon-btn:hover {
+    background: #f0f2f7;
+    color: #1b1f2b;
+    border-color: #e3e6ef;
+}
+
+.toolbar__group-btn {
+    height: 3.6rem;
+    display: inline-flex;
     align-items: center;
-    gap: 0.8rem;
-    border-bottom: 1px solid #eceef4;
-    transition: background 0.15s ease;
-}
-
-.bb-cat:hover {
-    background: #eef0f7;
-}
-
-.bb-cat__dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 3px;
-    flex: none;
-}
-
-.bb-cat__caret {
-    margin-left: auto;
-    color: #9ca3af;
-    font-size: 1.2rem;
-    transition: transform 0.15s ease;
-}
-
-.bb-cat.is-open .bb-cat__caret {
-    transform: rotate(90deg);
-}
-
-.bb-cat__blocks {
-    display: none;
-    padding: 0.6rem 1rem 0.9rem;
-    flex-direction: column;
-    gap: 0.5rem;
-    border-bottom: 1px solid #eceef4;
-}
-
-.bb-cat.is-open + .bb-cat__blocks {
-    display: flex;
-}
-
-.bb-palette {
-    display: flex;
-    align-items: center;
-    gap: 0.7rem;
-    width: 100%;
-    border: 1px solid #e0e3ec;
-    background: #ffffff;
-    border-radius: 8px;
-    padding: 0.55rem 0.8rem;
+    gap: 0.6rem;
+    border: 1px solid #e3e6ef;
+    border-radius: 6px;
+    background: #fff;
+    color: #333;
     font-family: inherit;
     font-size: 1.3rem;
-    font-weight: 500;
-    color: #333;
+    font-weight: 600;
+    padding: 0 1rem;
     cursor: pointer;
-    text-align: left;
-    transition: transform 0.12s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    transition: all 0.12s ease;
 }
 
-.bb-palette:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(30, 40, 80, 0.1);
-    border-color: #c9cfdf;
+.toolbar__group-btn:hover {
+    border-color: #c3c9da;
+    background: #f6f7fb;
 }
 
-.bb-palette__chip {
-    width: 12px;
-    height: 12px;
-    border-radius: 3px;
-    flex: none;
+.toolbar__group-btn.is-running {
+    background: #e23b53;
+    color: #fff;
+    border-color: #e23b53;
 }
 
-/* ---- Centre: workspace ---- */
+.vertical-divider {
+    width: 1px;
+    height: 2.4rem;
+    background: #e3e6ef;
+    margin: 0 0.4rem;
+}
+
+/* ---- Builder canvas (workspace area) ---- */
 
 .builder__canvas {
+    grid-column: 2;
+    grid-row: 2;
     min-height: 0;
-    overflow: auto;
+    overflow: hidden;
     background-color: #fbfcfe;
     background-image: radial-gradient(circle, #d9dde7 1px, transparent 1px);
     background-size: 18px 18px;
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
-    padding: 2.4rem;
-}
-
-.ws {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    min-width: 420px;
-    max-width: 100%;
-}
-
-.ws__empty {
-    color: #9ca3af;
-    font-size: 1.4rem;
-    font-weight: 300;
-    padding: 4rem 0;
-    background: #fff;
-    border: 1px dashed #d8dce8;
-    border-radius: 10px;
-    padding: 3rem 4rem;
-}
-
-/* ---- Blockly workspace container ---- */
-
-.builder__canvas Blockly,
-.builder__canvas .blocklyWorkspace,
-.builder__canvas > div.blocklyToolboxDiv {
-    background-color: #fbfcfe !important;
+    position: relative;
+    padding: 0 !important;
+    background-image: none !important;
 }
 
 #builder-workspace {
     width: 100%;
     height: 100%;
     min-height: 0;
-    flex: 1;
 }
 
-.builder__canvas {
-    padding: 0 !important;
-    background-color: #fbfcfe !important;
-    background-image: none !important;
-    display: block !important;
-    position: relative;
+/* ---- Status bar (bottom, below the grid) ---- */
+
+.builder__statusbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.6rem 1.4rem;
+    background: #f7f8fc;
+    border-top: 1px solid #e6e9f2;
+    font-size: 1.2rem;
+    color: #6b7280;
+    flex-shrink: 0;
 }
 
-.builder__palette {
-    display: none !important;
-}
+/* ---- Runpanel (right side) ---- */
 
-.blocklyToolboxDiv {
-    background: #f7f8fc !important;
-    border-right: 1px solid #e6e9f2 !important;
+.builder__runpanel {
+    grid-row: 1 / -1;
+    grid-column: 3;
+    display: flex;
+    flex-direction: column;
+    background: #f9fafb;
+    border-left: 1px solid #e6e9f2;
+    overflow: hidden;
 }
 
 /* ---- Blocks (Blockly-style) ---- */
@@ -2187,15 +2118,7 @@ select.bb-inp {
     border-radius: 0 0 8px 8px;
 }
 
-/* ---- Right: run panel ---- */
-
-.builder__runpanel {
-    background: #f7f8fc;
-    border-left: 1px solid #e6e9f2;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-}
+/* ---- Right: run panel (duplicate removed, defined in grid section above) ---- */
 
 .builder__tabs {
     display: flex;
@@ -2368,48 +2291,30 @@ select.bb-inp {
     color: #1b1f2b;
 }
 
-/* ---- Bottom status bar ---- */
-
-.builder__statusbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 0.6rem 1.4rem;
-    background: #ffffff;
-    border-top: 1px solid #e6e9f2;
-    font-size: 1.2rem;
-    color: #6b7280;
-}
+/* ---- Bottom status bar (duplicate removed, defined in grid section above) ---- */
 
 @media (max-width: 980px) {
     .builder__main {
         grid-template-columns: 1fr;
-        grid-template-rows: auto auto auto;
+        grid-template-rows: 5.6rem 1fr;
         overflow-y: auto;
-    }
-    .builder__palette {
-        display: none !important;
     }
     .builder__runpanel {
         border-left: none;
         border-top: 1px solid #e6e9f2;
         min-height: 240px;
+        grid-column: 1;
+        grid-row: 3;
+        grid-template-columns: 1fr;
     }
     .builder__canvas {
         min-height: 320px;
+        grid-column: 1;
+        grid-row: 2;
     }
-    .ws {
-        min-width: 0;
-        width: 100%;
-    }
-    .bb-block {
-        min-width: 0;
-        width: 100%;
-    }
-    .builder__topbar-actions {
-        width: 100%;
-        justify-content: space-between;
+    .toolbar {
+        grid-column: 1;
+        grid-row: 1;
     }
 }
 /* =========================================================================
